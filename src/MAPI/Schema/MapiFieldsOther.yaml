@@ -1,0 +1,120 @@
+# this file provides for the mapping of the keys of named properties
+# to symbolic names (as opposed to mapitags.yaml, which is currently
+# in a different format, has a different source, and is only fixed
+# code properties)
+#
+# essentially the symbols are slightly munged versions of the names
+# given to these properties by CDO, or Outlook's object model.
+# it was parsed out of cdo10.htm, and neatened up a bit.
+#
+# interestingly, despite having separate guids, the codes are picked not to
+# clash. further the names themselves have only 3 clashes in all the below.
+---
+"PSETID_Address":
+  0x8005: file_under
+  0x8017: last_name_and_first_name
+  0x8018: company_and_full_name
+  0x8019: full_name_and_company
+  0x801a: home_address
+  0x801b: business_address
+  0x801c: other_address
+  0x8022: selected_address
+  0x802b: web_page
+  0x802c: yomi_first_name
+  0x802d: yomi_last_name
+  0x802e: yomi_company_name
+  0x8030: last_first_no_space
+  0x8031: last_first_space_only
+  0x8032: company_last_first_no_space
+  0x8033: company_last_first_space_only
+  0x8034: last_first_no_space_company
+  0x8035: last_first_space_only_company
+  0x8036: last_first_and_suffix
+  0x8045: business_address_street
+  0x8046: business_address_city
+  0x8047: business_address_state
+  0x8048: business_address_postal_code
+  0x8049: business_address_country
+  0x804a: business_address_post_office_box
+  0x804f: user_field1
+  0x8050: user_field2
+  0x8051: user_field3
+  0x8052: user_field4
+  0x8062: imaddress
+  0x8082: email_addr_type
+  0x8083: email_email_address
+  0x8084: email_original_display_name
+  0x8085: email_original_entry_id
+  0x8092: email2_addr_type
+  0x8093: email2_email_address
+  0x8094: email2_original_display_name
+  0x8095: email2_original_entry_id
+  0x80a2: email3_addr_type
+  0x80a3: email3_email_address
+  0x80a4: email3_original_display_name
+  0x80a5: email3_original_entry_id
+  0x80d8: internet_free_busy_address
+"PSETID_Task":
+  0x8101: status
+  0x8102: percent_complete
+  0x8103: team_task
+  0x8104: start_date
+  0x8105: due_date
+  0x8106: duration
+  0x810f: date_completed
+  0x8110: actual_work
+  0x8111: total_work
+  0x811c: complete
+  0x811f: owner
+  0x8126: is_recurring
+"PSETID_Appointment":
+  0x8205: busy_status
+  0x8208: location
+  0x820d: start_date
+  0x820e: end_date
+  0x8213: duration
+  0x8214: colors
+  0x8216: recurrence_state
+  0x8218: response_status
+  0x8222: reply_time
+  0x8223: is_recurring
+  0x822e: organizer
+  0x8231: recurrence_type
+  0x8232: recurrence_pattern
+"PSETID_Common":
+  # also had CdoPR_FLAG_DUE_BY when applied to messages. i don't currently
+  # use message class specific names
+  0x8502: reminder_time
+  0x8503: reminder_set
+  0x8516: common_start
+  0x8517: common_end
+  0x851c: reminder_override
+  0x851e: reminder_sound
+  0x851f: reminder_file
+  # this one only listed as CdoPR_FLAG_TEXT. maybe should be
+  # reminder_text
+  0x8530: flag_text
+  0x8534: mileage
+  0x8535: billing_information
+  0x8539: companies
+  0x853a: contact_names
+  # had CdoPR_FLAG_DUE_BY_NEXT for this one also
+  0x8560: reminder_next_time
+"PSETID_Log":
+  0x8700: entry
+  0x8704: start_date
+  0x8705: start_time
+  0x8706: start
+  0x8707: duration
+  0x8708: end
+  0x870e: doc_printed
+  0x870f: doc_saved
+  0x8710: doc_routed
+  0x8711: doc_posted
+  0x8712: entry_type
+"PSETID_Note":
+  0x8b00: color
+  0x8b02: width
+  0x8b03: height
+"PS_PUBLIC_STRINGS":
+  Keywords: categories
