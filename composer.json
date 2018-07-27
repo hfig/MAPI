@@ -1,6 +1,7 @@
 {
     "name": "hfig/mapi",
     "description": "Pure PHP library for reading and manipulating Microsoft Outlook .msg messages (MAPI documents)",
+    "license": "MIT",
     "repositories": [
         {
             "type": "vcs",
