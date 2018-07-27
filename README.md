@@ -21,9 +21,13 @@ Compared to ``ruby-msg``, this library:
 
 Install using composer
 
-```php
+```sh
+# required prerequisite for buggy PEAR package (see below)
+composer config repositories.0 vcs https://github.com/hfig/ole
+
 composer require hfig/mapi
-// required if you need to convert to MIME
+
+# needed if you want to convert to MIME format
 composer require swiftmailer/swiftmailer
 ```
 
