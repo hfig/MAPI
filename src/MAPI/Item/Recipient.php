@@ -2,7 +2,7 @@
 
 namespace Hfig\MAPI\Item;
 
-class Recipient extends Object
+class Recipient extends MapiObject
 {
     const RECIPIENT_TYPES = [
         0 => 'From',

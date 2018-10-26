@@ -2,7 +2,7 @@
 
 namespace Hfig\MAPI\Item;
 
-abstract class Attachment extends Object
+abstract class Attachment extends MapiObject
 {
     protected $embedded_msg = null;
     protected $embedded_ole = null;
