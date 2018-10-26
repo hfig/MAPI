@@ -160,7 +160,7 @@ class Message extends MessageItem
 
             if (!$this->bodyHTML) {
                 //jstewmc/rtf
-                throw new \Exception('No HTML or Embeded RTF body. Convert from RTF not implemented');
+                throw new \Exception('No HTML or Embedded RTF body. Convert from RTF not implemented');
             }
         }
 

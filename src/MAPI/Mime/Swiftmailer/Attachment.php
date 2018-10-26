@@ -49,7 +49,7 @@ class Attachment extends BaseAttachment implements MimeConvertible
                 Message::wrap($this->embedded_msg)->toMime()
             );
         }
-        elseif ($this->embeded_ole) {
+        elseif ($this->embedded_ole) {
             // in practice this scenario doesn't seem to occur
             // MS Office documents are attached as files not
             // embedded ole objects

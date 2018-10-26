@@ -5,7 +5,7 @@ namespace Hfig\MAPI\Item;
 abstract class Attachment extends Object
 {
     protected $embedded_msg = null;
-    protected $embeded_ole = null;
+    protected $embedded_ole = null;
 
     public function getFilename()
     {
@@ -14,7 +14,7 @@ abstract class Attachment extends Object
 
     public function getData()
     {
-        return $this->embedded_msg ?? $this->embeded_ole ?? $this->properties['attach_data'] ?? null;
+        return $this->embedded_msg ?? $this->embedded_ole ?? $this->properties['attach_data'] ?? null;
     }
 
     public function copyToStream($stream)
@@ -30,7 +30,7 @@ abstract class Attachment extends Object
         // this is very untested...
         //throw new \RuntimeException('Saving an OLE Compound Document is not supported');
 
-        $this->embeded_ole->saveToStream($stream);
+        $this->embedded_ole->saveToStream($stream);
     }
 
 
