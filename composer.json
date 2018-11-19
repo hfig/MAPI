@@ -6,7 +6,7 @@
         "php": "^7.0",
         "ext-bcmath": "*",
         "ext-mbstring": "*",
-        "hfig/pear-ole": "^1.0.1",
+        "pear/ole": "^1.0.0RC5",
         "pear/pear-core-minimal": "^1.10",
         "symfony/yaml": "^4.1",
         "ramsey/uuid": "^3.8",

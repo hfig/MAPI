@@ -99,8 +99,6 @@ MAPI documents are Microsoft OLE Structured Storage databases, much like old ``.
 
 The PEAR library ``OLE`` can read these database files. However this PEAR library is ancient and does not meet any modern coding standards, hence it's kept entirely decoupled from the message parsing code of this library. Hopefully it can be replaced one day.
 
-Further, the PEAR library has a bug that prevents it from reading the small document stream correctly. This bug has only existed for 13 years. A forked version with a fix is ``required`` by this library's Composer manifest to avoid the issue.
-
 ## Alternatives
 
 For PHP, installing the [Kopano Core](https://github.com/Kopano-dev/kopano-core) project on your server will make available ``ext-mapi``, a PHP extension which implements allows access to a port of the low-level MAPI Win32 API.
