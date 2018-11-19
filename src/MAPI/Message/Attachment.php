@@ -20,7 +20,7 @@ class Attachment extends AttachmentItem
     /** @var PropertySet */
     protected $properties;
 
-    protected $embeded_ole_type;
+    protected $embedded_ole_type;
 
     public function __construct(Element $obj, Message $parent)
     {
@@ -28,8 +28,8 @@ class Attachment extends AttachmentItem
         $this->parent = $parent;
 
         $this->embedded_msg = null;
-        $this->embeded_ole  = null;
-        $this->embeded_ole_type = '';
+        $this->embedded_ole  = null;
+        $this->embedded_ole_type = '';
 
         $this->properties = new PropertySet(
             new PropertyStore($obj, $parent->getNameId())
@@ -42,17 +42,17 @@ class Attachment extends AttachmentItem
             if ($child->isDirectory() && preg_match(PropertyStore::SUBSTG_RX, $child->getName(), $matches)) {
                 // magic numbers??
                 if ($matches[1] == '3701' && strtolower($matches[2]) == '000d') {
-                    $this->embeded_ole = $child;
+                    $this->embedded_ole = $child;
                 }
             }
 
         }
 
-        if ($this->embeded_ole) {
+        if ($this->embedded_ole) {
             $type = $this->checkEmbeddedOleType();
             if ($type == 'Microsoft Office Outlook Message') {
-                $this->embedded_msg = new Message($this->embeded_ole, $parent);
-            }            
+                $this->embedded_msg = new Message($this->embedded_ole, $parent);
+            }
         }
 
     }
@@ -62,7 +62,7 @@ class Attachment extends AttachmentItem
         $found = 0;
         $type = null;
 
-        foreach ($this->embeded_ole->getChildren() as $child) {
+        foreach ($this->embedded_ole->getChildren() as $child) {
             if (preg_match('/__(substg|properties|recip|attach|nameid)/', $child->getName())) {
                 $found++;
                 if ($found > 2) break;
@@ -73,7 +73,7 @@ class Attachment extends AttachmentItem
         }
 
         if ($type) {
-            $this->embeded_ole_type = $type;
+            $this->embedded_ole_type = $type;
         }
 
         return $type;
@@ -82,9 +82,9 @@ class Attachment extends AttachmentItem
 
     public function getMimeType()
     {
-        
-        $mime = $this->properties['attach_mime_tag'] ?? $this->embeded_ole_type;
-        if (!$mime) {        
+
+        $mime = $this->properties['attach_mime_tag'] ?? $this->embedded_ole_type;
+        if (!$mime) {
             $mime = 'application/octet-stream';
         }
         
