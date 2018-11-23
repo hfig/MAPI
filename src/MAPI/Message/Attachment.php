@@ -103,7 +103,7 @@ class Attachment extends AttachmentItem
 
     public function isValid()
     {
-        return (count($this->properties) > 0);
+        return $this->properties !== null;
     }
 
     public function __get($name)
