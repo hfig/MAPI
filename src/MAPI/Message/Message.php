@@ -115,6 +115,11 @@ class Message extends MessageItem
         return $this->properties->getStore()->getNameId();
     }
 
+    public function getInternetMessageId(): ?string
+    {
+        return $this->properties['internet_message_id'] ?? null;
+    }
+
     public function getBody()
     {
         if ($this->bodyPlain) return $this->bodyPlain;

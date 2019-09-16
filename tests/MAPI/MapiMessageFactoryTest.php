@@ -22,6 +22,8 @@ class MapiMessageFactoryTest extends TestCase
             "Testing Manuel Lemos' MIME E-mail composing and sending PHP class: HTML message\r\n________________________________\r\n\r\nHello Manuel,\r\n\r\nThis message is just to let you know that the MIME E-mail message composing and sending PHP class<http://www.phpclasses.org/mimemessage> is working as expected.\r\n\r\nHere is an image embedded in a message as a separate part:\r\n[cid:ae0357e57f04b8347f7621662cb63855.gif]\r\nThank you,\r\nmlemos\r\n\r\n",
             $message->getBody()
         );
+        $this->assertEquals('<20050430192829.0489.mlemos@acm.org>',$message->getInternetMessageId());
+
         $attachments = $message->getAttachments();
         $this->assertCount(3,$attachments);
 
