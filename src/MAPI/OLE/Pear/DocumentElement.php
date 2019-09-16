@@ -154,6 +154,9 @@ class DocumentElement implements CompoundDocumentElement
         $this->pps->Size = $size;
     }
 
+    /**
+     * @return DocumentElementCollection
+     */
     public function getChildren()
     {
         //if (!$this->wrappedChildren) {

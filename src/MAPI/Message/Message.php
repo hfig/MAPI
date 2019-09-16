@@ -33,8 +33,9 @@ class Message extends MessageItem
     /** @var Message */
     protected $parent;
 
-    /** @var array */
+    /** @var Attachment[] */
     protected $attachments = [];
+    /** @var Recipient[] */
     protected $recipients = [];
 
     protected $bodyPlain;
@@ -86,11 +87,13 @@ class Message extends MessageItem
         }
     }
 
+    /** @return Attachment[] */
     public function getAttachments()
     {
         return $this->attachments;
     }
 
+    /** @return  Recipient[] */
     public function getRecipients()
     {
         return $this->recipients;
