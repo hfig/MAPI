@@ -92,6 +92,11 @@ class Attachment extends AttachmentItem
         return $mime;
     }
 
+    public function getContentId(): ?string
+    {
+        return $this->properties['attach_content_id'] ?? null;
+    }
+
     public function getEmbeddedOleData()
     {
         $compobj = $this->properties["\01CompObj"];

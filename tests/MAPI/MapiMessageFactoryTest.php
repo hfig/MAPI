@@ -26,8 +26,13 @@ class MapiMessageFactoryTest extends TestCase
         $this->assertCount(3,$attachments);
 
         $this->assertEquals('attachment.txt',$attachments[0]->getFilename());
+        $this->assertNull($attachments[0]->getContentId());
         $this->assertEquals('This is just a plain text attachment file named attachment.txt .',$attachments[0]->getData());
+
         $this->assertEquals('logo.gif',$attachments[1]->getFilename());
+        $this->assertEquals('ae0357e57f04b8347f7621662cb63855.gif',$attachments[1]->getContentId());
+
         $this->assertEquals('background.gif',$attachments[2]->getFilename());
+        $this->assertEquals('4c837ed463ad29c820668e835a270e8a.gif',$attachments[2]->getContentId());
     }
 }
