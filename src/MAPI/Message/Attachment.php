@@ -8,7 +8,9 @@ use Hfig\MAPI\Property\PropertyStore;
 use Hfig\MAPI\Property\PropertySet;
 
 
-
+/**
+ * @var PropertySet $properties
+ */
 class Attachment extends AttachmentItem
 {
     /** @var Element */
@@ -16,9 +18,6 @@ class Attachment extends AttachmentItem
 
     /** @var Message */
     protected $parent;
-
-    /** @var PropertySet */
-    protected $properties;
 
     protected $embedded_ole_type;
 
@@ -31,9 +30,10 @@ class Attachment extends AttachmentItem
         $this->embedded_ole  = null;
         $this->embedded_ole_type = '';
 
-        $this->properties = new PropertySet(
+        // Set properties
+        parent::__construct(new PropertySet(
             new PropertyStore($obj, $parent->getNameId())
-        );
+        ));
 
         // initialise property set
         //super PropertySet.new(PropertyStore.load(@obj))
