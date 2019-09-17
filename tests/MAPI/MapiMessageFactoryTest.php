@@ -36,5 +36,19 @@ class MapiMessageFactoryTest extends TestCase
 
         $this->assertEquals('background.gif',$attachments[2]->getFilename());
         $this->assertEquals('4c837ed463ad29c820668e835a270e8a.gif',$attachments[2]->getContentId());
+
+        $this->assertEquals(new \DateTime('2005-04-30 22:28:29', new \DateTimeZone('UTC')), $message->getSendTime());
+    }
+
+    public function testParseMessage2()
+    {
+        $documentFactory = new DocumentFactory();
+        $messageFactory = new MapiMessageFactory();
+
+        $ole = $documentFactory->createFromFile(__DIR__.'/../_files/Swetlana.msg');
+
+        $message = $messageFactory->parseMessage($ole);
+
+        $this->assertEquals(new \DateTime('2006-03-07 13:25:19', new \DateTimeZone('UTC')), $message->getSendTime());
     }
 }

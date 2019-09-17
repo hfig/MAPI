@@ -61,7 +61,7 @@ class Recipient extends MapiObject
 
     public function __toString()
     {
-        $name = $this->getName();
+        $name  = $this->getName();
         $email = $this->getEmail();
 
         //echo $this->getAddressType() . ': ' . sprintf('%s <%s>', $name, unpack('H*', $email)[1]) . "\n";

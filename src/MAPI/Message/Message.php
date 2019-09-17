@@ -200,6 +200,17 @@ class Message extends MessageItem
         return $from;
     }
 
+    public function getSendTime(): ?\DateTime
+    {
+        $sendTime = $this->properties['client_submit_time'];
+
+        if (!$sendTime) {
+            return null;
+        }
+
+        return \DateTime::createFromFormat('U',$sendTime);
+    }
+
     public function __get($name)
     {
         if ($name == 'properties') {
