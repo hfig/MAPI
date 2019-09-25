@@ -33,8 +33,9 @@ class Message extends MessageItem
     /** @var Message */
     protected $parent;
 
-    /** @var array */
+    /** @var Attachment[] */
     protected $attachments = [];
+    /** @var Recipient[] */
     protected $recipients = [];
 
     protected $bodyPlain;
@@ -86,11 +87,13 @@ class Message extends MessageItem
         }
     }
 
+    /** @return Attachment[] */
     public function getAttachments()
     {
         return $this->attachments;
     }
 
+    /** @return  Recipient[] */
     public function getRecipients()
     {
         return $this->recipients;
@@ -110,6 +113,11 @@ class Message extends MessageItem
     public function getNameId()
     {
         return $this->properties->getStore()->getNameId();
+    }
+
+    public function getInternetMessageId(): ?string
+    {
+        return $this->properties['internet_message_id'] ?? null;
     }
 
     public function getBody()
@@ -190,6 +198,17 @@ class Message extends MessageItem
         }        
         
         return $from;
+    }
+
+    public function getSendTime(): ?\DateTime
+    {
+        $sendTime = $this->properties['client_submit_time'];
+
+        if (!$sendTime) {
+            return null;
+        }
+
+        return \DateTime::createFromFormat('U',$sendTime);
     }
 
     public function __get($name)

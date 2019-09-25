@@ -46,6 +46,7 @@ interface CompoundDocumentElement
     public function getSize();
     public function setSize($size);
 
+    /** @return Pear\DocumentElementCollection */
     public function getChildren();
     public function getData();
 

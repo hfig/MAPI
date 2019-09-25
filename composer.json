@@ -13,7 +13,8 @@
         "psr/log": "^1.0"
     },
     "require-dev": {
-        "swiftmailer/swiftmailer": "^6.1"
+        "swiftmailer/swiftmailer": "^6.1",
+        "phpunit/phpunit": "^8.3"
     },
     "suggest": {
         "swiftmailer/swiftmailer": "Conversion to MIME (eml file) message format"  
@@ -22,6 +23,11 @@
     "autoload": {
         "psr-4": {
             "Hfig\\MAPI\\": "src/MAPI"
+        }
+    },
+    "autoload-dev": {
+        "psr-0": {
+            "Hfig\\MAPI\\Tests\\": "tests/MAPI"
         }
     }
 }
