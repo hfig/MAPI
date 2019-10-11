@@ -332,7 +332,7 @@ class PropertyStore
 
                 case '0048':    // PT_CLSID 
                 case '1048':    // PT_MV_CLSID
-                    $value = (string)OleGuid::fromBytes(substr($rawProp, 8));
+                    $value = (string)OleGuid::fromBytes($rawProp);
                     $this->addProperty($key, $value);
                     break;
 
