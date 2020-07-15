@@ -9,7 +9,7 @@
         "pear/ole": "^1.0.0RC5",
         "pear/pear-core-minimal": "^1.10",
         "symfony/yaml": "^4.1",
-        "ramsey/uuid": "^3.8",
+        "ramsey/uuid": "^4.0",
         "psr/log": "^1.0"
     },
     "require-dev": {
