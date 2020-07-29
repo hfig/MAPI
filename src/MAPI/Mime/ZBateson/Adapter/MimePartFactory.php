@@ -1,6 +1,6 @@
 <?php
 
-namespace Hfig\MAPI\Mime\ZBatesonAdapter;
+namespace Hfig\MAPI\Mime\ZBateson\Adapter;
 
 use ZBateson\MailMimeParser\Message\MimePartFactory as BaseMimePartFactory;
 
