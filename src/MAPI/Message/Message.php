@@ -211,6 +211,11 @@ class Message extends MessageItem
         return \DateTime::createFromFormat('U',$sendTime);
     }
 
+    public function properties(): PropertySet
+    {
+	return $this->properties;
+    }
+	
     public function __get($name)
     {
         if ($name == 'properties') {
