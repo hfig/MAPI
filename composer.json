@@ -26,7 +26,7 @@
         }
     },
     "autoload-dev": {
-        "psr-0": {
+        "psr-4": {
             "Hfig\\MAPI\\Tests\\": "tests/MAPI"
         }
     }
