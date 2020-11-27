@@ -187,7 +187,7 @@ class DocumentElement implements CompoundDocumentElement
 
         // nasty Pear_OLE actually writes out a temp file and fpassthru's on it. Yuck.
         // so let's give a wrapped stream which ignores Pear_OLE's fopen() and fclose()
-        $wrappedStreamUrl = StreamWrapper::wrapStream($stream);
+        $wrappedStreamUrl = StreamWrapper::wrapStream($stream, 'r');
         $root->save($wrappedStreamUrl);
 
         /*ob_start();
