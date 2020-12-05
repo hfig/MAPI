@@ -58,7 +58,7 @@ class DocumentFactory implements CompoundDocumentFactory
             // Number of blocks in Short Block Allocation Table
             $sbbatBlockCount = $ole->_readInt4($fh);
             // Block id of first sector in Master Block Allocation Table
-            $mbatFirstBlockId = $ole->_readInt4($fh);
+            $mbatFirstBlockId = $ole->_readSignedInt4($fh);
             // Number of blocks in Master Block Allocation Table
             $mbbatBlockCount = $ole->_readInt4($fh);
             $ole->bbat = array();
@@ -67,7 +67,7 @@ class DocumentFactory implements CompoundDocumentFactory
             // Block Allocation Table
             $mbatBlocks = array();
             for ($i = 0; $i < 109; $i++) {
-                $mbatBlocks[] = $ole->_readInt4($fh);
+                $mbatBlocks[] = $ole->_readSignedInt4($fh);
             }
 
             // Read rest of Master Block Allocation Table (if any is left)
@@ -87,7 +87,7 @@ class DocumentFactory implements CompoundDocumentFactory
                 $pos = $ole->_getBlockOffset($mbatBlocks[$i]);
                 fseek($fh, $pos);
                 for ($j = 0 ; $j < $ole->bigBlockSize / 4; $j++) {
-                    $ole->bbat[] = $ole->_readInt4($fh);
+                    $ole->bbat[] = $ole->_readSignedInt4($fh);
                 }
             }
 
@@ -101,7 +101,7 @@ class DocumentFactory implements CompoundDocumentFactory
                 return false;
             }
             for ($blockId = 0; $blockId < $shortBlockCount; $blockId++) {
-                $ole->sbat[$blockId] = $ole->_readInt4($sbatFh);
+                $ole->sbat[$blockId] = $ole->_readSignedInt4($sbatFh);
             }
             fclose($sbatFh);
 
