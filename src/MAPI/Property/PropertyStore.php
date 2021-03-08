@@ -137,7 +137,8 @@ class PropertyStore
             $prop  = '';
             if ($named) {
                 $str_off = unpack('V', $rawProp)[1];
-                $len     = unpack('V', substr($namesData, $str_off, 4))[1];
+                if (strlen($namesData) - $str_off < 4) continue; // not sure with this, but at least it will not read outside the bounds and crash
+                $len = unpack('V', substr($namesData, $str_off, 4))[1];
                 $data = substr($namesData, $str_off + 4, $len);
                 $prop = mb_convert_encoding($data, 'UTF-8', 'UTF-16LE');
             }
