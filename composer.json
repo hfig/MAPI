@@ -3,7 +3,7 @@
     "description": "Pure PHP library for reading and manipulating Microsoft Outlook .msg messages (MAPI documents)",
     "license": "MIT",
     "require": {
-        "php": "^7.1",
+        "php": "^7.1||^8.0",
         "ext-bcmath": "*",
         "ext-mbstring": "*",
         "pear/ole": "^1.0.0RC8",
