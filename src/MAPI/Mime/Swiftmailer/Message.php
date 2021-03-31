@@ -35,24 +35,44 @@ class Message extends BaseMessage implements MimeConvertible
 
         // add them to the message
         $add = [$message, 'setTo']; // function
-        $this->addRecipientHeaders('To', $headers, $add);
+        try {
+            $this->addRecipientHeaders('To', $headers, $add);
+        }
+        catch (\Exception $e) {}
         $headers->unset('To');
 
         $add = [$message, 'setCc']; // function
-        $this->addRecipientHeaders('Cc', $headers, $add);
+        try {
+            $this->addRecipientHeaders('Cc', $headers, $add);
+        }
+        catch (\Exception $e) {}
         $headers->unset('Cc');
 
         $add = [$message, 'setBcc']; // function
-        $this->addRecipientHeaders('Bcc', $headers, $add);
+        try {
+            $this->addRecipientHeaders('Bcc', $headers, $add);
+        }
+        catch (\Exception $e) {}
         $headers->unset('Bcc');
 
         $add = [$message, 'setFrom']; // function
-        $this->addRecipientHeaders('From', $headers, $add);
+        try {
+            $this->addRecipientHeaders('From', $headers, $add);
+        }
+        catch (\Exception $e) {}
         $headers->unset('From');
 
 
-        $message->setId(trim($headers->getValue('Message-ID'), '<>'));
-        $message->setDate(new \DateTime($headers->getValue('Date')));
+        try {
+            $message->setId(trim($headers->getValue('Message-ID'), '<>'));
+        }
+        catch (\Exception $e) {}
+
+        try {
+            $message->setDate(new \DateTime($headers->getValue('Date')));
+        }
+        catch (\Exception $e) {}
+
         if ($boundary = $this->getMimeBoundary($headers)) {
             $message->setBoundary($boundary);
         }
@@ -97,7 +117,10 @@ class Message extends BaseMessage implements MimeConvertible
             if ($bodyBoundary) {
                 $multipart->setBoundary($bodyBoundary);
             }
-            $multipart->setBody($this->getBody(), 'text/plain');
+            try {
+                $multipart->setBody($this->getBody(), 'text/plain');
+            }
+            catch (\Exception $e) {}
 
             $part = new \Swift_MimePart($html, 'text/html', null);
             $part->setEncoder($message->getEncoder());
