@@ -12,6 +12,7 @@ use Hfig\MAPI\Mime\Swiftmailer\Adapter\DependencySet;
 
 class Message extends BaseMessage implements MimeConvertible
 {
+	protected $conversionExceptionsList = [];
 
     public static function wrap(BaseMessage $message)
     {
@@ -22,8 +23,10 @@ class Message extends BaseMessage implements MimeConvertible
         return new self($message->obj, $message->parent);
     }
     
-    public function toMime()
+    public function toMime(bool $muteConversionExceptions = false)
     {
+    	$this->conversionExceptionsList = [];
+
         DependencySet::register();
 
         $message = new \Swift_Message();
@@ -38,42 +41,72 @@ class Message extends BaseMessage implements MimeConvertible
         try {
             $this->addRecipientHeaders('To', $headers, $add);
         }
-        catch (\Exception $e) {}
+        catch (\Swift_RfcComplianceException $e) {
+        	if (!$muteConversionExceptions) {
+        		throw $e;
+			}
+        	$this->conversionExceptionsList[] = $e;
+		}
         $headers->unset('To');
 
         $add = [$message, 'setCc']; // function
         try {
             $this->addRecipientHeaders('Cc', $headers, $add);
         }
-        catch (\Exception $e) {}
+        catch (\Swift_RfcComplianceException $e) {
+			if (!$muteConversionExceptions) {
+				throw $e;
+			}
+			$this->conversionExceptionsList[] = $e;
+		}
         $headers->unset('Cc');
 
         $add = [$message, 'setBcc']; // function
         try {
             $this->addRecipientHeaders('Bcc', $headers, $add);
         }
-        catch (\Exception $e) {}
+        catch (\Swift_RfcComplianceException $e) {
+			if (!$muteConversionExceptions) {
+				throw $e;
+			}
+			$this->conversionExceptionsList[] = $e;
+		}
         $headers->unset('Bcc');
 
         $add = [$message, 'setFrom']; // function
         try {
             $this->addRecipientHeaders('From', $headers, $add);
         }
-        catch (\Exception $e) {}
+        catch (\Swift_RfcComplianceException $e) {
+			if (!$muteConversionExceptions) {
+				throw $e;
+			}
+			$this->conversionExceptionsList[] = $e;
+		}
         $headers->unset('From');
 
 
         try {
             $message->setId(trim($headers->getValue('Message-ID'), '<>'));
         }
-        catch (\Exception $e) {}
+        catch (\Swift_RfcComplianceException $e) {
+			if (!$muteConversionExceptions) {
+				throw $e;
+			}
+			$this->conversionExceptionsList[] = $e;
+		}
 
         try {
             $message->setDate(new \DateTime($headers->getValue('Date')));
         }
-        catch (\Exception $e) {}
+        catch (\Exception $e) { // the \DateTime can throw \Exception
+			if (!$muteConversionExceptions) {
+				throw $e;
+			}
+			$this->conversionExceptionsList[] = $e;
+		}
 
-        if ($boundary = $this->getMimeBoundary($headers)) {
+		if ($boundary = $this->getMimeBoundary($headers)) {
             $message->setBoundary($boundary);
         }
 
@@ -101,12 +134,23 @@ class Message extends BaseMessage implements MimeConvertible
                 $hasHtml = true;
             }
         }
-        catch (\Exception $e) {
-            // ignore invalid HTML body
+        catch (\Exception $e) { // getBodyHTML() can throw \Exception
+			if (!$muteConversionExceptions) {
+				throw $e;
+			}
+			$this->conversionExceptionsList[] = $e;
         }
 
         if (!$hasHtml) {
-            $message->setBody($this->getBody(), 'text/plain');
+			try {
+            	$message->setBody($this->getBody(), 'text/plain');
+			}
+			catch (\Exception $e) { // getBody() can throw \Exception
+				if (!$muteConversionExceptions) {
+					throw $e;
+				}
+				$this->conversionExceptionsList[] = $e;
+			}
         }
         else {
             // build multi-part
@@ -120,7 +164,12 @@ class Message extends BaseMessage implements MimeConvertible
             try {
                 $multipart->setBody($this->getBody(), 'text/plain');
             }
-            catch (\Exception $e) {}
+            catch (\Exception $e) { // getBody() can throw \Exception
+				if (!$muteConversionExceptions) {
+					throw $e;
+				}
+				$this->conversionExceptionsList[] = $e;
+			}
 
             $part = new \Swift_MimePart($html, 'text/html', null);
             $part->setEncoder($message->getEncoder());
@@ -142,15 +191,15 @@ class Message extends BaseMessage implements MimeConvertible
         return $message;
     }
 
-    public function toMimeString(): string
+    public function toMimeString(bool $muteConversionExceptions = false): string
     {
-        return (string)$this->toMime();
+        return (string)$this->toMime($muteConversionExceptions);
     }
 
-    public function copyMimeToStream($stream)
+    public function copyMimeToStream($stream, bool $muteConversionExceptions = false)
     {
         // TODO: use \Swift_Message::toByteStream instead
-        fwrite($stream, $this->toMimeString());
+        fwrite($stream, $this->toMimeString($muteConversionExceptions));
     }
 
     protected function addRecipientHeaders($field, HeaderCollection $headers, callable $add)
@@ -314,4 +363,12 @@ class Message extends BaseMessage implements MimeConvertible
         return '';
     }
 
+	/**
+	 * Returns the list of conversion exceptions from the call of toMime() with the $muteConversionExceptions = true.
+	 *
+	 * @return array
+	 */
+    public function getConversionExceptionsList() : array {
+    	return $this->conversionExceptionsList;
+	}
 }
