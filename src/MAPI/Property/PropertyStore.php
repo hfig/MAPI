@@ -362,7 +362,7 @@ class PropertyStore
 
 
                 default:
-                    $this->logger->warning(sprintf('ignoring data in __properties section, encoding: %s', $encoding), [unpack('H*', $rawProp)]);
+                    $this->logger->warning(sprintf('ignoring data in __properties section, encoding: %s', $encoding), unpack('H*', $rawProp));
 
             }
         }
@@ -386,7 +386,7 @@ class PropertyStore
             else {
                 //# i think i hit these when i have a named property, in the PS_MAPI
 				//# guid
-				$this->logger->warning(sprintf('property in named range not in nameid %s', [print_r($key, true)]));
+				$this->logger->warning(sprintf('property in named range not in nameid %s', print_r($key, true)));
 				$key = new PropertyKey($key);
             }
         }
