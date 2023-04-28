@@ -6,6 +6,7 @@ use Hfig\MAPI\Message\Message as BaseMessage;
 use Hfig\MAPI\Mime\HeaderCollection;
 use Hfig\MAPI\Mime\MimeConvertible;
 use Hfig\MAPI\Mime\Swiftmailer\Adapter\DependencySet;
+use Hfig\MAPI\OLE\CompoundDocumentElement as Element;
 
 
 // maybe should use decorator pattern? lots to reimplement then though
@@ -13,6 +14,7 @@ use Hfig\MAPI\Mime\Swiftmailer\Adapter\DependencySet;
 class Message extends BaseMessage implements MimeConvertible
 {
     protected $conversionExceptionsList = [];
+    protected $muteConversionExceptions = false;
 
     public static function wrap(BaseMessage $message)
     {
@@ -22,16 +24,14 @@ class Message extends BaseMessage implements MimeConvertible
 
         return new self($message->obj, $message->parent);
     }
-    
-    public function toMime(bool $muteConversionExceptions = false)
-    {
-        $this->conversionExceptionsList = [];
 
+    public function toMime()
+    {
         DependencySet::register();
 
         $message = new \Swift_Message();
         $message->setEncoder(new \Swift_Mime_ContentEncoder_RawContentEncoder());
-        
+
 
         // get headers
         $headers = $this->translatePropertyHeaders();
@@ -42,7 +42,7 @@ class Message extends BaseMessage implements MimeConvertible
             $this->addRecipientHeaders('To', $headers, $add);
         }
         catch (\Swift_RfcComplianceException $e) {
-            if (!$muteConversionExceptions) {
+            if (!$this->muteConversionExceptions) {
                 throw $e;
             }
             $this->conversionExceptionsList[] = $e;
@@ -54,7 +54,7 @@ class Message extends BaseMessage implements MimeConvertible
             $this->addRecipientHeaders('Cc', $headers, $add);
         }
         catch (\Swift_RfcComplianceException $e) {
-            if (!$muteConversionExceptions) {
+            if (!$this->muteConversionExceptions) {
                 throw $e;
             }
             $this->conversionExceptionsList[] = $e;
@@ -66,7 +66,7 @@ class Message extends BaseMessage implements MimeConvertible
             $this->addRecipientHeaders('Bcc', $headers, $add);
         }
         catch (\Swift_RfcComplianceException $e) {
-            if (!$muteConversionExceptions) {
+            if (!$this->muteConversionExceptions) {
                 throw $e;
             }
             $this->conversionExceptionsList[] = $e;}
@@ -77,7 +77,7 @@ class Message extends BaseMessage implements MimeConvertible
             $this->addRecipientHeaders('From', $headers, $add);
         }
         catch (\Swift_RfcComplianceException $e) {
-            if (!$muteConversionExceptions) {
+            if (!$this->muteConversionExceptions) {
                 throw $e;
             }
             $this->conversionExceptionsList[] = $e;
@@ -89,7 +89,7 @@ class Message extends BaseMessage implements MimeConvertible
             $message->setId(trim($headers->getValue('Message-ID'), '<>'));
         }
         catch (\Swift_RfcComplianceException $e) {
-            if (!$muteConversionExceptions) {
+            if (!$this->muteConversionExceptions) {
                 throw $e;
             }
             $this->conversionExceptionsList[] = $e;
@@ -99,7 +99,7 @@ class Message extends BaseMessage implements MimeConvertible
             $message->setDate(new \DateTime($headers->getValue('Date')));
         }
         catch (\Exception $e) { // the \DateTime can throw \Exception
-            if (!$muteConversionExceptions) {
+            if (!$this->muteConversionExceptions) {
                 throw $e;
             }
             $this->conversionExceptionsList[] = $e;
@@ -109,7 +109,7 @@ class Message extends BaseMessage implements MimeConvertible
             $message->setBoundary($boundary);
         }
 
-        
+
         $headers->unset('Message-ID');
         $headers->unset('Date');
         $headers->unset('Mime-Version');
@@ -124,17 +124,17 @@ class Message extends BaseMessage implements MimeConvertible
         $bodyBoundary = '';
         if ($boundary) {
             if (preg_match('~^_(\d\d\d)_([^_]+)_~', $boundary, $matches)) {
-                $bodyBoundary = sprintf('_%03d_%s_', (int)$matches[1]+1, $matches[2]);                
+                $bodyBoundary = sprintf('_%03d_%s_', (int)$matches[1]+1, $matches[2]);
             }
-        }               
+        }
         try {
             $html = $this->getBodyHTML();
-            if ($html) {                
+            if ($html) {
                 $hasHtml = true;
             }
         }
         catch (\Exception $e) { // getBodyHTML() can throw \Exception
-            if (!$muteConversionExceptions) {
+            if (!$this->muteConversionExceptions) {
                 throw $e;
             }
             $this->conversionExceptionsList[] = $e;
@@ -145,7 +145,7 @@ class Message extends BaseMessage implements MimeConvertible
                 $message->setBody($this->getBody(), 'text/plain');
             }
             catch (\Exception $e) { // getBody() can throw \Exception
-                if (!$muteConversionExceptions) {
+                if (!$this->muteConversionExceptions) {
                     throw $e;
                 }
                 $this->conversionExceptionsList[] = $e;
@@ -164,7 +164,7 @@ class Message extends BaseMessage implements MimeConvertible
                 $multipart->setBody($this->getBody(), 'text/plain');
             }
             catch (\Exception $e) { // getBody() can throw \Exception
-                if (!$muteConversionExceptions) {
+                if (!$this->muteConversionExceptions) {
                     throw $e;
                 }
                 $this->conversionExceptionsList[] = $e;
@@ -177,7 +177,7 @@ class Message extends BaseMessage implements MimeConvertible
             $message->attach($multipart);
             $multipart->setChildren(array_merge($multipart->getChildren(), [$part]));
         }
-            
+
 
         // attachments
         foreach ($this->getAttachments() as $a) {
@@ -190,15 +190,20 @@ class Message extends BaseMessage implements MimeConvertible
         return $message;
     }
 
-    public function toMimeString(bool $muteConversionExceptions = false): string
+    public function toMimeString(): string
     {
-        return (string)$this->toMime($muteConversionExceptions);
+        return (string) $this->toMime();
     }
 
-    public function copyMimeToStream($stream, bool $muteConversionExceptions = false)
+    public function copyMimeToStream($stream)
     {
         // TODO: use \Swift_Message::toByteStream instead
-        fwrite($stream, $this->toMimeString($muteConversionExceptions));
+        fwrite($stream, $this->toMimeString());
+    }
+
+    public function setMuteConversionExceptions(bool $muteConversionExceptions)
+    {
+        $this->muteConversionExceptions = $muteConversionExceptions;
     }
 
     protected function addRecipientHeaders($field, HeaderCollection $headers, callable $add)
@@ -212,7 +217,7 @@ class Message extends BaseMessage implements MimeConvertible
         if (!is_array($recipient)) {
             $recipient = [$recipient];
         }
-        
+
 
         $map = [];
         foreach ($recipient as $r) {
@@ -236,13 +241,13 @@ class Message extends BaseMessage implements MimeConvertible
                     $header = $ivalue->rawkey;
                     $value  = $ivalue->value;
                     $add($header, $value);
-                }                
+                }
             }
             else {
                 $header = $value->rawkey;
                 $value  = $value->value;
                 $add($header, $value);
-            }            
+            }
         }
     }
 
@@ -268,13 +273,13 @@ class Message extends BaseMessage implements MimeConvertible
         }
 
         foreach ($transport as $header) {
-            $rawHeaders->add($header);            
+            $rawHeaders->add($header);
         }
 
 
 
-        // sender        
-        $senderType = $this->properties['sender_addrtype'];        
+        // sender
+        $senderType = $this->properties['sender_addrtype'];
         if ($senderType == 'SMTP') {
             $rawHeaders->set('From', $this->getSender());
         }
@@ -310,22 +315,22 @@ class Message extends BaseMessage implements MimeConvertible
         $map = [
             ['internet_message_id', 'Message-ID'],
             ['in_reply_to_id',      'In-Reply-To'],
-            
+
             ['importance',          'Importance',  function($val) { return ($val == '1') ? null : $val; }],
             ['priority',            'Priority',    function($val) { return ($val == '1') ? null : $val; }],
             ['sensitivity',         'Sensitivity', function($val) { return ($val == '0') ? null : $val; }],
-            
+
             ['conversation_topic',  'Thread-Topic'],
-            
+
             //# not sure of the distinction here
             //# :originator_delivery_report_requested ??
-            ['read_receipt_requested', 'Disposition-Notification-To', function($val) use ($rawHeaders) { 
+            ['read_receipt_requested', 'Disposition-Notification-To', function($val) use ($rawHeaders) {
                 $from = $rawHeaders->getValue('From');
 
                 if (preg_match('/^((?:"[^"]*")|.+) (<.+>)$/', $from, $matches)) {
                     $from = trim($matches[2], '<>');
                 }
-                return $from;            
+                return $from;
             }]
         ];
         foreach ($map as $do) {
@@ -342,7 +347,7 @@ class Message extends BaseMessage implements MimeConvertible
 
     }
 
-    protected function getMimeBoundary(HeaderCollection $headers) 
+    protected function getMimeBoundary(HeaderCollection $headers)
     {
         // firstly - use the value in the headers
         if ($type = $headers->getValue('Content-Type')) {
@@ -354,7 +359,7 @@ class Message extends BaseMessage implements MimeConvertible
         // if never sent via SMTP then it has to be synthesised
         // this is done using the message id
         if ($mid = $headers->getValue('Message-ID')) {
-            $recount = 0; 
+            $recount = 0;
             $mid = preg_replace('~[^a-zA-z0-9\'()+_,-.\/:=? ]~', '', $mid, -1, $recount);
             $mid = substr($mid, 0, 55);
             return sprintf('_%03d_%s_', $recount, $mid);
@@ -363,7 +368,7 @@ class Message extends BaseMessage implements MimeConvertible
     }
 
     /**
-     * Returns the list of conversion exceptions from the call of toMime() with the $muteConversionExceptions = true.
+     * Returns the list of conversion exceptions.
      *
      * @return array
      */
