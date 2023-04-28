@@ -6,7 +6,6 @@ use Hfig\MAPI\Message\Message as BaseMessage;
 use Hfig\MAPI\Mime\HeaderCollection;
 use Hfig\MAPI\Mime\MimeConvertible;
 use Hfig\MAPI\Mime\Swiftmailer\Adapter\DependencySet;
-use Hfig\MAPI\OLE\CompoundDocumentElement as Element;
 
 
 // maybe should use decorator pattern? lots to reimplement then though
