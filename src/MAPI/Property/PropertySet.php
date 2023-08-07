@@ -138,23 +138,22 @@ class PropertySet implements \ArrayAccess
         return $this->set($name, $value);
     }
 
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
-        //return (!is_null($this->get($offset)));
         return (!is_null($this->raw->get($this->resolveKey($offset))));
     }
 
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->get($offset);
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         $this->set($offset, $value);
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         $this->delete($offset);
     }

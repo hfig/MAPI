@@ -45,7 +45,7 @@ class PropertyCollection implements \IteratorAggregate
         }, $this->col);
     }
 
-    public function getIterator()
+    public function getIterator(): \Traversable
     {
         foreach ($this->col as $bucket) {
             yield $bucket['key'] => $bucket['value'];

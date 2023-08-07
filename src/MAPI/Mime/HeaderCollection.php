@@ -6,7 +6,7 @@ class HeaderCollection implements \IteratorAggregate
 {
     protected $rawHeaders = [];
 
-    public function getIterator()
+    public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->rawHeaders);
     }
