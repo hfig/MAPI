@@ -97,7 +97,7 @@ class Attachment extends AttachmentItem
         return $this->properties['attach_content_id'] ?? null;
     }
 
-    public function getEmbeddedOleData()
+    public function getEmbeddedOleData(): ?string
     {
         $compobj = $this->properties["\01CompObj"];
         if (is_null($compobj)) {
@@ -106,7 +106,7 @@ class Attachment extends AttachmentItem
         return substr($compobj, 32);
     }
 
-    public function isValid()
+    public function isValid(): bool
     {
         return $this->properties !== null;
     }

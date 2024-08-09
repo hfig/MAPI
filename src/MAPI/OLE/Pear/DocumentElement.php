@@ -32,7 +32,7 @@ class DocumentElement implements CompoundDocumentElement
         return $this->pps->No;
     }
 
-    public function setIndex($index)
+    public function setIndex($index): void
     {
         $this->pps->No = $index;
     }
@@ -42,12 +42,12 @@ class DocumentElement implements CompoundDocumentElement
         return $this->pps->Name;
     }
 
-    public function setName($name)
+    public function setName($name): void
     {
         $this->pps->Name = $name;
     }
 
-    public function getType()
+    public function getType(): ?int
     {
         static $map = [
             OLE_PPS_TYPE_ROOT =>  CompoundDocumentElement::TYPE_ROOT,
@@ -58,7 +58,7 @@ class DocumentElement implements CompoundDocumentElement
         return $map[$this->pps->Type] ?? null;
     }
 
-    public function setType($type)
+    public function setType($type): void
     {
         static $map = [
             CompoundDocumentElement::TYPE_ROOT => OLE_PPS_TYPE_ROOT,
@@ -73,17 +73,17 @@ class DocumentElement implements CompoundDocumentElement
         $this->pps->Type = $map[$type];
     }
 
-    public function isDirectory() 
+    public function isDirectory(): bool
     {
         return ($this->getType() == CompoundDocumentElement::TYPE_DIRECTORY);
     }
 
-    public function isFile() 
+    public function isFile(): bool
     {
         return ($this->getType() == CompoundDocumentElement::TYPE_FILE);
     }
 
-    public function isRoot() 
+    public function isRoot(): bool
     {
         return ($this->getType() == CompoundDocumentElement::TYPE_ROOT);
     }
@@ -93,7 +93,7 @@ class DocumentElement implements CompoundDocumentElement
         return $this->pps->PrevPps;
     }
 
-    public function setPreviousIndex($index)
+    public function setPreviousIndex($index): void
     {
         $this->pps->PrevPps = $index;
     }
@@ -103,7 +103,7 @@ class DocumentElement implements CompoundDocumentElement
         return $this->pps->NextPps;
     }
 
-    public function setNextIndex($index)
+    public function setNextIndex($index): void
     {
         $this->pps->NextPps = $index;
     }
@@ -113,7 +113,7 @@ class DocumentElement implements CompoundDocumentElement
         return $this->pps->DirPps;
     }
 
-    public function setFirstChildIndex($index)
+    public function setFirstChildIndex($index): void
     {
         $this->pps->DirPps = $index;
     }
@@ -123,7 +123,7 @@ class DocumentElement implements CompoundDocumentElement
         return $this->pps->Time1st;
     }
 
-    public function setTimeCreated($time)
+    public function setTimeCreated($time): void
     {
         $this->pps->Time1st = $time;
     }
@@ -133,7 +133,7 @@ class DocumentElement implements CompoundDocumentElement
         return $this->pps->Time2nd;
     }
 
-    public function setTimeModified($time)
+    public function setTimeModified($time): void
     {
         $this->pps->Time2nd = $time;
     }
@@ -149,15 +149,12 @@ class DocumentElement implements CompoundDocumentElement
         return $this->pps->Size;
     }
 
-    public function setSize($size)
+    public function setSize($size): void
     {
         $this->pps->Size = $size;
     }
 
-    /**
-     * @return DocumentElementCollection
-     */
-    public function getChildren()
+    public function getChildren(): DocumentElementCollection
     {
         //if (!$this->wrappedChildren) {
         //    $this->wrappedChildren = new DocumentElementCollection($this->ole, $this->pps->Children);
@@ -179,7 +176,7 @@ class DocumentElement implements CompoundDocumentElement
         return $this->pps;
     }
 
-    public function saveToStream($stream)
+    public function saveToStream($stream): void
     {
         
 

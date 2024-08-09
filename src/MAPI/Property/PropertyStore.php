@@ -42,7 +42,7 @@ class PropertyStore
         }
     }
 
-    protected function load(Element $obj)
+    protected function load(Element $obj): void
     {
 
         //# find name_id first
@@ -75,7 +75,10 @@ class PropertyStore
 
     }
 
-    protected function parseNameId($obj)
+    /**
+     * @return array<PropertyKey>
+     */
+    protected function parseNameId($obj): array
     {
         // $remaining = clone $obj->getChildren()
 
@@ -170,7 +173,7 @@ class PropertyStore
 
     }
 
-    protected function parseSubstg($key, $encoding, $offset, $obj)
+    protected function parseSubstg($key, $encoding, $offset, $obj): void
     {
         $MULTIVAL = 0x1000;
         
@@ -209,7 +212,7 @@ class PropertyStore
 
     //# For parsing the +properties+ file. Smaller properties are serialized in one chunk,
     //# such as longs, bools, times etc. The parsing has problems.
-    protected function parseProperties($obj)
+    protected function parseProperties($obj): void
     {
         $data = $obj->getData();
         $pad  = $obj->getSize() % 16;
@@ -226,7 +229,7 @@ class PropertyStore
             
             // copying ruby implementation's oddness to avoid any endianess issues
             $rawData = unpack('V', $rawProp)[1];
-            list($property, $encoding) = str_split(sprintf('%08x', $rawData), 4);
+            [$property, $encoding] = str_split(sprintf('%08x', $rawData), 4);
             $key = hexdec($property);
 
             //# doesn't make any sense to me. probably because its a serialization of some internal
@@ -370,7 +373,7 @@ class PropertyStore
         
     }
 
-    protected function addProperty($key, $value, $pos = null)
+    protected function addProperty($key, $value, $pos = null): void
     {
         
         

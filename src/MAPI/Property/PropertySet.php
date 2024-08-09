@@ -32,7 +32,7 @@ class PropertySet implements \ArrayAccess
     
     }
 
-    private static function init()
+    private static function init(): void
     {
         self::$tagsMsg   = Yaml::parseFile(self::SCHEMA_DIR . '/MapiFieldsMessage.yaml');
         self::$tagsOther = Yaml::parseFile(self::SCHEMA_DIR . '/MapiFieldsOther.yaml');
@@ -46,7 +46,7 @@ class PropertySet implements \ArrayAccess
         }
     }
     
-    protected function map()
+    protected function map(): void
     {
         //print_r($this->raw->keys());
 
@@ -116,12 +116,12 @@ class PropertySet implements \ArrayAccess
         return $val;
     }
 
-    public function set($code, $value, $guid = null)
+    public function set($code, $value, $guid = null): void
     {        
         $this->raw->set($this->resolveKey($code, $guid), $value);
     }
 
-    public function delete($code, $guid = null)
+    public function delete($code, $guid = null): void
     {
         $this->raw->delete($this->resolveKey($code, $guid));
     }
@@ -138,23 +138,27 @@ class PropertySet implements \ArrayAccess
         return $this->set($name, $value);
     }
 
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         //return (!is_null($this->get($offset)));
         return (!is_null($this->raw->get($this->resolveKey($offset))));
     }
 
+    /**
+     * @return mixed
+     */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->get($offset);
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         $this->set($offset, $value);
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         $this->delete($offset);
     }

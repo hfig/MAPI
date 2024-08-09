@@ -16,9 +16,9 @@ class Factory implements ConversionFactory
         $this->muteConversionExceptions = $muteConversionExceptions;
     }
 
-    public function parseMessage(Element $root)
+    public function parseMessage(Element $root): Message
     {
-        $message = new \Hfig\MAPI\Mime\Swiftmailer\Message($root);
+        $message = new Message($root);
         $message->setMuteConversionExceptions($this->muteConversionExceptions);
 
         return $message;

@@ -6,12 +6,12 @@ class HeaderCollection implements \IteratorAggregate
 {
     protected $rawHeaders = [];
 
-    public function getIterator()
+    public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->rawHeaders);
     }
     
-    public function add($header, $value = null)
+    public function add($header, $value = null): void
     {
         if (is_null($value)) {
             //echo $header . "\n";
@@ -40,7 +40,7 @@ class HeaderCollection implements \IteratorAggregate
         }
     }
 
-    public function set($header, $value)
+    public function set($header, $value): void
     {
         $key = strtolower($header);
         $val = [
@@ -77,13 +77,13 @@ class HeaderCollection implements \IteratorAggregate
 
     }
 
-    public function has($header) 
+    public function has($header): bool
     {
         $key = strtolower($header);
         return isset($this->rawHeaders[$key]);
     }
 
-    public function unset($header) 
+    public function unset($header): void
     {
         $key = strtolower($header);
         unset($this->rawHeaders[$key]);

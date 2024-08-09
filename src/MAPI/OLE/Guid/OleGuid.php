@@ -11,7 +11,7 @@ class OleGuid
     /** @var UuidFactory */
     private static $factory = null;
 
-    protected static function getFactory()
+    protected static function getFactory(): UuidFactory
     {
         if (!self::$factory) {
             self::$factory = new UuidFactory();

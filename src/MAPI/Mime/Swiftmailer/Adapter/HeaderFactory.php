@@ -22,7 +22,7 @@ class HeaderFactory extends Swift_Mime_SimpleHeaderFactory
         $this->charset = $charset;
     }
 
-    public function createTextHeader($name, $value = null)
+    public function createTextHeader($name, $value = null): UnstructuredHeader
     {
         $header = new UnstructuredHeader($name, $this->encoder);
         if (isset($value)) {
@@ -33,7 +33,7 @@ class HeaderFactory extends Swift_Mime_SimpleHeaderFactory
         return $header;
     }
 
-    protected function setHeaderCharset(Swift_Mime_Header $header)
+    protected function setHeaderCharset(Swift_Mime_Header $header): void
     {
         if (isset($this->charset)) {
             $header->setCharset($this->charset);

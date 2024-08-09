@@ -25,7 +25,7 @@ abstract class Attachment extends MapiObject
         fwrite($stream, $this->getData() ?? '');
     }
 
-    protected function storeEmbeddedOle($stream)
+    protected function storeEmbeddedOle($stream): void
     {
         // this is very untested...
         //throw new \RuntimeException('Saving an OLE Compound Document is not supported');

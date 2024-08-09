@@ -21,7 +21,7 @@ class DocumentElementCollection implements \ArrayAccess, \IteratorAggregate
         $this->ole = $ole;
     }
 
-    public function getIterator()
+    public function getIterator(): \Traversable
     {
         foreach ($this->col as $k => $v)
         {
@@ -29,11 +29,15 @@ class DocumentElementCollection implements \ArrayAccess, \IteratorAggregate
         }
     }
 
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->col[$offset]);
     }
 
+    /**
+     * @return mixed
+     */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         if (!isset($this->col[$offset])) {
@@ -47,7 +51,7 @@ class DocumentElementCollection implements \ArrayAccess, \IteratorAggregate
         return $this->proxy_col[$offset];
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (!$value instanceof DocumentElement) {
             throw new \InvalidArgumentException('Collection must contain DocumentElement instances');
@@ -57,7 +61,7 @@ class DocumentElementCollection implements \ArrayAccess, \IteratorAggregate
         $this->col[$offset] = $value->unwrap();
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->proxy_col[$offset]);
         unset($this->col[$offset]);
