@@ -7,7 +7,7 @@ class EmbeddedHTML
     // the fact that this seems to work is rather amazing because it's a horrid mess!
     // the proper format is specified by [MS-OXRTFEX]
 
-    public static function extract($data)
+    public static function extract($data): string
     {
         if ($pos = strpos($data, '{\*\htmltag') === false) {
             return '';

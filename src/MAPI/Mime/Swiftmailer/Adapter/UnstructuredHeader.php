@@ -18,7 +18,7 @@ class UnstructuredHeader extends Swift_Mime_Headers_UnstructuredHeader
      *
      * @return bool
      */
-    protected function tokenNeedsEncoding($token)
+    protected function tokenNeedsEncoding($token): bool
     {
         static $prevToken = '';
 

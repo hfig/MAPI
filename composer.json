@@ -13,7 +13,8 @@
     },
     "require-dev": {
         "swiftmailer/swiftmailer": "^6.1",
-        "phpunit/phpunit": "^8.3"
+        "phpunit/phpunit": "^8.3",
+        "pear/pear-core-minimal": "^1.10"
     },
     "suggest": {
         "swiftmailer/swiftmailer": "Conversion to MIME (eml file) message format"  

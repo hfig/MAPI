@@ -88,18 +88,18 @@ class Message extends MessageItem
     }
 
     /** @return Attachment[] */
-    public function getAttachments()
+    public function getAttachments(): array
     {
         return $this->attachments;
     }
 
     /** @return  Recipient[] */
-    public function getRecipients()
+    public function getRecipients(): array
     {
         return $this->recipients;
     }
 
-    public function getRecipientsOfType($type)
+    public function getRecipientsOfType($type): array
     {
         $response = [];
         foreach ($this->recipients as $r) {

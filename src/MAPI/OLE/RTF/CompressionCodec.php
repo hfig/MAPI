@@ -4,16 +4,16 @@ namespace Hfig\MAPI\OLE\RTF;
 
 class CompressionCodec
 {
-    const DICT = "{\\rtf1\\ansi\\mac\\deff0\\deftab720{\\fonttbl;}" .
+    public const DICT = "{\\rtf1\\ansi\\mac\\deff0\\deftab720{\\fonttbl;}" .
                    "{\\f0\\fnil \\froman \\fswiss \\fmodern \\fscript ".
                    "\\fdecor MS Sans SerifSymbolArialTimes New RomanCourier" .
                    "{\\colortbl\\red0\\green0\\blue0\n\r\\par " .
                    "\\pard\\plain\\f0\\fs20\\b\\i\\u\\tab\\tx";
-    const BLOCKSIZE = 4096;
-    const HEADERSIZE = 16;
+    public const BLOCKSIZE = 4096;
+    public const HEADERSIZE = 16;
 
     // this is adapted from Java libpst instead of Ruby ruby-msg
-    static private function uncompress($raw, $compressedSize, $uncompressedSize)
+    private static function uncompress($raw, $compressedSize, $uncompressedSize): string
     {
         $buf = str_pad(self::DICT, self::BLOCKSIZE, "\0");
         $wp  = strlen(self::DICT);
@@ -71,8 +71,7 @@ class CompressionCodec
         return $data;
     }
 
-
-    static public function decode($data)
+    public static function decode($data): string
     {
         
         $result = '';
@@ -80,7 +79,7 @@ class CompressionCodec
         //echo 'Len: ' . strlen($data), "\n";
 
         $header = array_values(unpack('Vcs/Vus/a4m/Vcrc', $data));
-        list($compressedSize, $uncompressedSize, $magic, $crc32) = $header;
+        [$compressedSize, $uncompressedSize, $magic, $crc32] = $header;
 
         if ($magic == 'MELA') {
             $data = substr($data, self::HEADERSIZE, $uncompressedSize);
@@ -96,8 +95,12 @@ class CompressionCodec
 
     }
 
-    // see Kopano-core Mapi4Linux or Python delimitry/compressed_rtf
-    static public function encode($data)
+    /**
+     * @comment see Kopano-core Mapi4Linux or Python delimitry/compressed_rtf
+     *
+     * @return false|string
+     */
+    public static function encode($data)
     {
         $uncompressedSize = strlen($data);
         $compressedSize = $uncompressedSize + self::HEADERSIZE;

@@ -8,7 +8,7 @@ use \Swift_DependencyContainer;
 class DependencySet {
 
     // override the HeaderFactory registration in the DI container
-    public static function register($force = false)
+    public static function register($force = false): void
     {
         static $registered = false;
 

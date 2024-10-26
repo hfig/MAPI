@@ -24,7 +24,7 @@ class Message extends BaseMessage implements MimeConvertible
         return new self($message->obj, $message->parent);
     }
 
-    public function toMime()
+    public function toMime(): \Swift_Message
     {
         DependencySet::register();
 

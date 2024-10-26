@@ -15,7 +15,7 @@ class StreamWrapper
 
     private static $handles = [];
 
-    public static function wrapStream($stream, $mode)
+    public static function wrapStream($stream, $mode): string
     {
         self::register();
 
@@ -26,9 +26,11 @@ class StreamWrapper
         $key = key(self::$handles);
 
         return 'olewrap://stream/' . (string)$key;
-
     }
 
+    /**
+     * @return resource
+     */
     public static function createStreamContext($stream)
     {
         return stream_context_create([
@@ -36,7 +38,7 @@ class StreamWrapper
         ]);
     }
 
-    public static function register()
+    public static function register(): void
     {
         if (!in_array('olewrap', stream_get_wrappers())) {
             stream_wrapper_register('olewrap', __CLASS__);
@@ -49,7 +51,7 @@ class StreamWrapper
     }
 
 
-    public function stream_open($path, $mode, $options, &$opened_path) 
+    public function stream_open($path, $mode, $options, &$opened_path): bool
     { 
         $url = parse_url($path);
         $streampath = [];
@@ -80,7 +82,7 @@ class StreamWrapper
         return false;
     }
 
-    public function stream_read($count)
+    public function stream_read($count): string
     {
         // always read a block to satisfy the buffer
         $this->buffer = fread($this->stream, 8192);
@@ -89,33 +91,42 @@ class StreamWrapper
         return substr($this->buffer, 0, $count);
     }
 
+    /**
+     * @return false|int
+     */
     public function stream_write($data)
     {
         return fwrite($this->stream, $data);
     }
 
+    /**
+     * @return false|int
+     */
     public function stream_tell()
     {
         return ftell($this->stream);
     }
 
-    public function stream_eof()
+    public function stream_eof(): bool
     {
         return feof($this->stream);
     }
 
-    public function stream_seek($offset, $whence)
+    public function stream_seek($offset, $whence): int
     {
         //echo 'seeking on parent stream (' . $offset . '  ' . $whence . ')'."\n";
         return fseek($this->stream, $offset, $whence);
     }
 
+    /**
+     * @return array|false
+     */
     public function stream_stat()
     {
         return fstat($this->stream);
     }
 
-    public function url_stat($path, $flags)
+    public function url_stat($path, $flags): array
     {
         return [
             'dev'     => 0,

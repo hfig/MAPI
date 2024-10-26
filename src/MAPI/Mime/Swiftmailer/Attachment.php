@@ -17,7 +17,7 @@ class Attachment extends BaseAttachment implements MimeConvertible
         return new self($attachment->obj, $attachment->parent);
     }
 
-    public function toMime()
+    public function toMime(): \Swift_Attachment
     {
         DependencySet::register();
 
@@ -67,7 +67,7 @@ class Attachment extends BaseAttachment implements MimeConvertible
         return (string)$this->toMime();
     }
 
-    public function copyMimeToStream($stream)
+    public function copyMimeToStream($stream): void
     {
         fwrite($stream, $this->toMimeString());
     }

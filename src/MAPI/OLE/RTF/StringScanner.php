@@ -63,7 +63,7 @@ class StringScanner
         return false;
     }
 
-    public function eos()
+    public function eos(): bool
     {
         return $this->pos >= strlen($this->buffer);
     }

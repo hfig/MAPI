@@ -12,9 +12,9 @@ class PropertySetConstants
 	// these guids are all defined with the macro DEFINE_OLEGUID in mapiguid.h.
     // see http://doc.ddart.net/msdn/header/include/mapiguid.h.html
     
-    const OLE_GUID = '{${prefix}-0000-0000-c000-000000000046}';
+    public const OLE_GUID = '{${prefix}-0000-0000-c000-000000000046}';
 
-    const NAMES = [        
+    public const NAMES = [
         '00020328' => 'PS_MAPI',
         '00020329' => 'PS_PUBLIC_STRINGS',
         '00020380' => 'PS_ROUTING_EMAIL_ADDRESSES',

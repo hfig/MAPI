@@ -22,7 +22,7 @@ class PropertyKey {
         //echo '  Created with code ' . $code . "\n";
     }
 
-    public function getHash()
+    public function getHash(): string
     {
         return static::getHashOf($this->code, $this->guid);
     }
@@ -37,7 +37,7 @@ class PropertyKey {
         return $this->guid;
     }
 
-    public static function getHashOf($code, $guid = null)
+    public static function getHashOf($code, $guid = null): string
     {
         if (!$guid) {
             $guid = PropertySetConstants::PS_MAPI();
