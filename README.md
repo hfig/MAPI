@@ -24,6 +24,12 @@ Install using composer
 ```sh
 composer require hfig/mapi
 
+# our dependency pear/ole has an unresolved dependency currently
+# therefore you need to install one of these explicitly:
+composer require pear/pear-core-minimal
+# or
+composer require pear/pear-core
+
 # needed if you want to convert to MIME format
 composer require swiftmailer/swiftmailer
 ```
