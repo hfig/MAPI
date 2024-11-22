@@ -16,7 +16,7 @@ class MapiMessageFactory
 
     public function parseMessage(Element $root)
     {
-        if ($this->parent) {
+        if ($this->parent instanceof ConversionFactory) {
             return $this->parent->parseMessage($root);
         }
 

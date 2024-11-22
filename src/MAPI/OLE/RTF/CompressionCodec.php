@@ -97,7 +97,7 @@ class CompressionCodec
      *
      * @return false|string
      */
-    public static function encode($data)
+    public static function encode($data): string
     {
         $uncompressedSize = strlen((string) $data);
         $compressedSize   = $uncompressedSize + self::HEADERSIZE;

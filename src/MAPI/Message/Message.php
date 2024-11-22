@@ -17,14 +17,12 @@ class Message extends MessageItem
         self::RECIP_RX,
     ];
 
-    /** @var Element */
-    protected $obj;
+    protected Element $obj;
 
     /** @var PropertySet */
     protected $properties;
 
-    /** @var Message */
-    protected $parent;
+    protected ?Message $parent;
 
     /** @var Attachment[] */
     protected $attachments = [];
@@ -41,7 +39,7 @@ class Message extends MessageItem
         $this->parent = $parent;
 
         $this->properties = new PropertySet(
-            new PropertyStore($obj, ($parent) ? $parent->getNameId() : null),
+            new PropertyStore($obj, ($parent instanceof Message) ? $parent->getNameId() : null),
         );
 
         $this->buildAttachments();

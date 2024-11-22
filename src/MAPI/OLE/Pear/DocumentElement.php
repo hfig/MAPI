@@ -161,7 +161,7 @@ class DocumentElement implements CompoundDocumentElement
         return $this->ole->getData($this->getIndex(), 0, $this->getSize());
     }
 
-    public function unwrap()
+    public function unwrap(): \OLE_PPS
     {
         return $this->pps;
     }

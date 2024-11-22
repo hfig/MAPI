@@ -20,20 +20,17 @@ class PropertyStore
         self::NAMEID_RX,
     ];
 
-    /** @var PropertyCollection */
-    protected $cache;
+    protected PropertyCollection $cache;
     protected $nameId;
 
-    /** @var LoggerInterface */
-    protected $logger;
+    protected LoggerInterface $logger;
 
     public function __construct(?Element $obj = null, protected $parentNameId = null, ?LoggerInterface $logger = null)
     {
         $this->cache  = new PropertyCollection();
-        $this->nameId = null;
         $this->logger = $logger ?? new NullLogger();
 
-        if ($obj) {
+        if ($obj instanceof Element) {
             $this->load($obj);
         }
     }
@@ -127,9 +124,9 @@ class PropertyStore
 
             // # the property will be serialised as this pseudo property, mapping it to this named property
             $pseudo_prop = 0x8000 + $offset;
-            $named       = ($flags & 1 == 1);
+            $named       = ($flags & 1 === 1);
             $prop        = '';
-            if ($named) {
+            if ($named !== 0) {
                 $str_off = unpack('V', $rawProp)[1];
                 if (strlen((string) $namesData) - $str_off < 4) {
                     continue;
@@ -162,7 +159,7 @@ class PropertyStore
         return $properties;
     }
 
-    protected function parseSubstg($key, $encoding, $offset, $obj): void
+    protected function parseSubstg($key, $encoding, $offset, Element $obj): void
     {
         $MULTIVAL = 0x1000;
 
@@ -177,7 +174,7 @@ class PropertyStore
                 return;
             } else {
                 // remove multivalue flag for individual pieces
-                $encoding = $encoding & ~$MULTIVAL;
+                $encoding &= ~$MULTIVAL;
             }
         } else {
             if ($offset) {
@@ -220,7 +217,7 @@ class PropertyStore
 
             // # doesn't make any sense to me. probably because its a serialization of some internal
             // # outlook structure..
-            if ($property == '0000') {
+            if ($property === '0000') {
                 continue;
             }
 

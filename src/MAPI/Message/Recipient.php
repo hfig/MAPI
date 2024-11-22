@@ -9,8 +9,7 @@ use Hfig\MAPI\Property\PropertyStore;
 
 class Recipient extends RecipientItem
 {
-    /** @var Element */
-    protected $obj;
+    protected Element $obj;
 
     /** @var PropertySet */
     protected $properties;

@@ -111,10 +111,8 @@ class Message extends BaseMessage implements MimeConvertible
         // body
         $hasHtml      = false;
         $bodyBoundary = '';
-        if ($boundary) {
-            if (preg_match('~^_(\d\d\d)_([^_]+)_~', (string) $boundary, $matches)) {
-                $bodyBoundary = sprintf('_%03d_%s_', (int) $matches[1] + 1, $matches[2]);
-            }
+        if ($boundary && preg_match('~^_(\d\d\d)_([^_]+)_~', (string) $boundary, $matches)) {
+            $bodyBoundary = sprintf('_%03d_%s_', (int) $matches[1] + 1, $matches[2]);
         }
         try {
             $html = $this->getBodyHTML();
@@ -143,7 +141,7 @@ class Message extends BaseMessage implements MimeConvertible
             $multipart = new \Swift_Attachment();
             $multipart->setContentType('multipart/alternative');
             $multipart->setEncoder($message->getEncoder());
-            if ($bodyBoundary) {
+            if ($bodyBoundary !== '' && $bodyBoundary !== '0') {
                 $multipart->setBoundary($bodyBoundary);
             }
             try {
@@ -178,13 +176,13 @@ class Message extends BaseMessage implements MimeConvertible
         return (string) $this->toMime();
     }
 
-    public function copyMimeToStream($stream)
+    public function copyMimeToStream($stream): void
     {
         // TODO: use \Swift_Message::toByteStream instead
         fwrite($stream, $this->toMimeString());
     }
 
-    public function setMuteConversionExceptions(bool $muteConversionExceptions)
+    public function setMuteConversionExceptions(bool $muteConversionExceptions): void
     {
         $this->muteConversionExceptions = $muteConversionExceptions;
     }
@@ -230,7 +228,7 @@ class Message extends BaseMessage implements MimeConvertible
         }
     }
 
-    protected function translatePropertyHeaders()
+    protected function translatePropertyHeaders(): HeaderCollection
     {
         $rawHeaders = new HeaderCollection();
 
@@ -240,7 +238,7 @@ class Message extends BaseMessage implements MimeConvertible
 
         $transportRaw = explode("\r\n", (string) $this->properties['transport_message_headers']);
         foreach ($transportRaw as $v) {
-            if (!$v) {
+            if ($v === '' || $v === '0') {
                 continue;
             }
 
@@ -323,13 +321,11 @@ class Message extends BaseMessage implements MimeConvertible
         return $rawHeaders;
     }
 
-    protected function getMimeBoundary(HeaderCollection $headers)
+    protected function getMimeBoundary(HeaderCollection $headers): string
     {
         // firstly - use the value in the headers
-        if ($type = $headers->getValue('Content-Type')) {
-            if (preg_match('~boundary="([a-zA-z0-9\'()+_,-.\/:=? ]+)"~', (string) $type, $matches)) {
-                return $matches[1];
-            }
+        if (($type = $headers->getValue('Content-Type')) && preg_match('~boundary="([a-zA-z0-9\'()+_,-.\/:=? ]+)"~', (string) $type, $matches)) {
+            return $matches[1];
         }
 
         // if never sent via SMTP then it has to be synthesised

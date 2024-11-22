@@ -4,7 +4,7 @@ namespace Hfig\MAPI\Property;
 
 class PropertyCollection implements \IteratorAggregate
 {
-    private $col = [];
+    private array $col = [];
 
     public function set(PropertyKey $key, $value): void
     {

@@ -30,7 +30,7 @@ class HeaderFactory extends \Swift_Mime_SimpleHeaderFactory
 
     protected function setHeaderCharset(\Swift_Mime_Header $header): void
     {
-        if (isset($this->charset)) {
+        if ($this->charset !== null) {
             $header->setCharset($this->charset);
         }
     }

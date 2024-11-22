@@ -4,7 +4,7 @@ namespace Hfig\MAPI\Property;
 
 class PropertyKey
 {
-    private $guid;
+    private string $guid;
 
     public function __construct(private $code, $guid = null)
     {
@@ -33,7 +33,7 @@ class PropertyKey
         return $this->guid;
     }
 
-    public static function getHashOf($code, $guid = null): string
+    public static function getHashOf(string $code, $guid = null): string
     {
         if (!$guid) {
             $guid = PropertySetConstants::PS_MAPI();

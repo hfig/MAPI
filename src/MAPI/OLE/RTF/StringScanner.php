@@ -8,12 +8,11 @@ namespace Hfig\MAPI\OLE\RTF;
 
 class StringScanner implements \Stringable
 {
-    private $pos;
+    private int $pos = 0;
     private $last;
 
     public function __construct(private $buffer)
     {
-        $this->pos = 0;
     }
 
     public function scan($str)
@@ -29,21 +28,19 @@ class StringScanner implements \Stringable
         return false;
     }
 
-    public function scanRegex($regex)
+    public function scanRegex($regex): array|false
     {
-        if (preg_match($regex, (string) $this->buffer, $matches, PREG_OFFSET_CAPTURE, $this->pos)) {
-            if ($matches[0][1] == $this->pos) {
-                $this->pos += strlen($matches[0][0]);
-                $this->last = $matches;
+        if (preg_match($regex, (string) $this->buffer, $matches, PREG_OFFSET_CAPTURE, $this->pos) && $matches[0][1] == $this->pos) {
+            $this->pos += strlen($matches[0][0]);
+            $this->last = $matches;
 
-                return $this->last;
-            }
+            return $this->last;
         }
 
         return false;
     }
 
-    public function scanUntil($str)
+    public function scanUntil($str): string|false
     {
         if (($newpos = strpos((string) $this->buffer, (string) $str, $this->pos)) !== false) {
             $this->last = substr((string) $this->buffer, $this->pos, $newpos - $this->pos);
@@ -55,7 +52,7 @@ class StringScanner implements \Stringable
         return false;
     }
 
-    public function scanUntilRegex($regex)
+    public function scanUntilRegex($regex): string|false
     {
         if (preg_match($regex, (string) $this->buffer, $matches, PREG_OFFSET_CAPTURE, $this->pos)) {
             $mlen       = strlen($matches[0][0]);
@@ -73,7 +70,7 @@ class StringScanner implements \Stringable
         return $this->pos >= strlen((string) $this->buffer);
     }
 
-    public function increment($count = 1)
+    public function increment($count = 1): string
     {
         $this->last = substr((string) $this->buffer, $this->pos, $count);
         $this->pos += $count;

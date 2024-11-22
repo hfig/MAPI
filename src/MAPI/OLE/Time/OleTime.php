@@ -17,7 +17,7 @@ class OleTime
      *
      * @return int
      */
-    public static function getTimeFromOleTime($string)
+    public static function getTimeFromOleTime($string): int|float
     {
         if (strlen((string) $string) !== 8) {
             return 0;

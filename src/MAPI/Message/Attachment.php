@@ -12,22 +12,19 @@ use Hfig\MAPI\Property\PropertyStore;
  */
 class Attachment extends AttachmentItem
 {
-    /** @var Element */
-    protected $obj;
+    protected Element $obj;
 
-    /** @var Message */
-    protected $parent;
+    protected Message $parent;
 
-    protected $embedded_ole_type;
+    protected $embedded_ole_type = '';
 
     public function __construct(Element $obj, Message $parent)
     {
         $this->obj    = $obj;
         $this->parent = $parent;
 
-        $this->embedded_msg      = null;
-        $this->embedded_ole      = null;
-        $this->embedded_ole_type = '';
+        $this->embedded_msg = null;
+        $this->embedded_ole = null;
 
         // Set properties
         parent::__construct(new PropertySet(
@@ -38,11 +35,9 @@ class Attachment extends AttachmentItem
         // super PropertySet.new(PropertyStore.load(@obj))
         // Msg.warn_unknown @obj
         foreach ($obj->getChildren() as $child) {
-            if ($child->isDirectory() && preg_match(PropertyStore::SUBSTG_RX, (string) $child->getName(), $matches)) {
-                // magic numbers??
-                if ($matches[1] == '3701' && strtolower($matches[2]) == '000d') {
-                    $this->embedded_ole = $child;
-                }
+            // magic numbers??
+            if ($child->isDirectory() && preg_match(PropertyStore::SUBSTG_RX, (string) $child->getName(), $matches) && ($matches[1] === '3701' && strtolower($matches[2]) === '000d')) {
+                $this->embedded_ole = $child;
             }
         }
 
@@ -54,7 +49,7 @@ class Attachment extends AttachmentItem
         }
     }
 
-    protected function checkEmbeddedOleType()
+    protected function checkEmbeddedOleType(): ?string
     {
         $found = 0;
         $type  = null;

@@ -17,7 +17,7 @@ class Recipient extends MapiObject implements \Stringable
     // # email_address will be an EX:/ address (X.400?), unless external recipient. the
     // # other two we try first.
     // # consider using entry id for this too.
-    public function getName()
+    public function getName(): ?string
     {
         $name = $this->properties['transmittable_display_name'] ?? $this->properties['display_name'] ?? '';
 

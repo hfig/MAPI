@@ -64,7 +64,7 @@ class PropertySetConstants
         return static::get($offset);
     }
 
-    public static function __callStatic($name, $args)
+    public static function __callStatic(string $name, $args)
     {
         $ret = static::get($name);
         if (is_null($ret)) {

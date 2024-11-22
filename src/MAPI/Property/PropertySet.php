@@ -8,32 +8,31 @@ class PropertySet implements \ArrayAccess
 {
     public const SCHEMA_DIR = __DIR__.'/../Schema';
 
-    /** @var PropertyCollection */
-    private $raw;
+    private PropertyCollection $raw;
 
     private static $tagsMsg;
     private static $tagsOther;
-    private $map = [];
+    private array $map = [];
 
     public function __construct(private readonly PropertyStore $store)
     {
         $this->raw = $this->store->getCollection();
 
         if (!self::$tagsMsg || !self::$tagsOther) {
-            self::init();
+            $this->init();
         }
 
         $this->map();
     }
 
-    private static function init(): void
+    private function init(): void
     {
         self::$tagsMsg   = Yaml::parseFile(self::SCHEMA_DIR.'/MapiFieldsMessage.yaml');
         self::$tagsOther = Yaml::parseFile(self::SCHEMA_DIR.'/MapiFieldsOther.yaml');
 
         foreach (self::$tagsOther as $propSet => $props) {
             $guid = (string) PropertySetConstants::$propSet();
-            if ($guid) {
+            if ($guid !== '' && $guid !== '0') {
                 self::$tagsOther[$guid] = $props;
                 unset(self::$tagsOther[$propSet]);
             }
@@ -47,7 +46,7 @@ class PropertySet implements \ArrayAccess
         foreach ($this->raw->keys() as $key) {
             // echo sprintf('Mapping %s %s'."\n", $key->getGuid(), $key->getCode());
 
-            if ((string) $key->getGuid() == (string) PropertySetConstants::PS_MAPI()) {
+            if ((string) $key->getGuid() === (string) PropertySetConstants::PS_MAPI()) {
                 // read from tagsMsg
                 // echo '  Seeking '.sprintf('%04x', $key->getCode())."\n";
                 $propertyName  = strtolower((string) $key->getCode());
@@ -86,7 +85,7 @@ class PropertySet implements \ArrayAccess
 
     /* public methods */
 
-    public function getStore()
+    public function getStore(): PropertyStore
     {
         return $this->store;
     }

@@ -18,12 +18,12 @@ class PropertyStoreEncodings
         return $e;
     }
 
-    public static function decode0x001f(Element $e)
+    public static function decode0x001f(Element $e): array|string|false
     {
         return mb_convert_encoding($e->getData(), 'UTF-8', 'UTF-16LE');
     }
 
-    public static function decode0x001e(Element $e)
+    public static function decode0x001e(Element $e): string
     {
         return trim((string) $e->getData());
     }

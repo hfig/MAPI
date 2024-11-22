@@ -4,8 +4,8 @@ namespace Hfig\MAPI\OLE\Pear;
 
 class DocumentElementCollection implements \ArrayAccess, \IteratorAggregate
 {
-    private $col       = [];
-    private $proxy_col = [];
+    private array $col       = [];
+    private array $proxy_col = [];
 
     public function __construct(private readonly \OLE $ole, ?array &$collection = null)
     {

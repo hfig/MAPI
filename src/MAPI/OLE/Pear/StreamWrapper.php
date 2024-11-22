@@ -9,10 +9,10 @@ class StreamWrapper
     private $stream;
     public $context;
     private $mode;
-    private $buffer;
-    private $position;
+    private string|bool|null $buffer = null;
+    private ?int $position           = null;
 
-    private static $handles = [];
+    private static array $handles = [];
 
     public static function wrapStream($stream, $mode): string
     {
@@ -83,18 +83,12 @@ class StreamWrapper
         return substr($this->buffer, 0, $count);
     }
 
-    /**
-     * @return false|int
-     */
-    public function stream_write($data)
+    public function stream_write($data): int|false
     {
         return fwrite($this->stream, (string) $data);
     }
 
-    /**
-     * @return false|int
-     */
-    public function stream_tell()
+    public function stream_tell(): int|false
     {
         return ftell($this->stream);
     }
@@ -110,10 +104,7 @@ class StreamWrapper
         return fseek($this->stream, $offset, $whence);
     }
 
-    /**
-     * @return array|false
-     */
-    public function stream_stat()
+    public function stream_stat(): array|false
     {
         return fstat($this->stream);
     }

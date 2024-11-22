@@ -8,8 +8,7 @@ use Ramsey\Uuid\UuidInterface as OleGuidInterface;
 
 class OleGuid
 {
-    /** @var UuidFactory */
-    private static $factory;
+    private static ?UuidFactory $factory = null;
 
     protected static function getFactory(): UuidFactory
     {
@@ -23,12 +22,12 @@ class OleGuid
         return self::$factory;
     }
 
-    public static function fromBytes($bytes): OleGuidInterface
+    public static function fromBytes(string $bytes): OleGuidInterface
     {
         return self::getFactory()->fromBytes($bytes);
     }
 
-    public static function fromString($guid): OleGuidInterface
+    public static function fromString(string $guid): OleGuidInterface
     {
         return self::getFactory()->fromString($guid);
     }

@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class MapiMessageFactoryTest extends TestCase
 {
-    public function testParseMessage()
+    public function testParseMessage(): void
     {
         $documentFactory = new DocumentFactory();
         $messageFactory  = new MapiMessageFactory();
@@ -40,7 +40,7 @@ class MapiMessageFactoryTest extends TestCase
         $this->assertEquals(new \DateTime('2005-04-30 22:28:29', new \DateTimeZone('UTC')), $message->getSendTime());
     }
 
-    public function testParseMessage2()
+    public function testParseMessage2(): void
     {
         $documentFactory = new DocumentFactory();
         $messageFactory  = new MapiMessageFactory();
