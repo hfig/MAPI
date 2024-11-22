@@ -3,16 +3,15 @@
 namespace Hfig\MAPI\Property;
 
 use Hfig\MAPI\OLE\Guid\OleGuid;
+use Ramsey\Uuid\UuidInterface as OleGuidInterface;
 
 // ruby-msg Mapi::PropertySet
 
 class PropertySetConstants
 {
     // the property set guid constants
-	// these guids are all defined with the macro DEFINE_OLEGUID in mapiguid.h.
+    // these guids are all defined with the macro DEFINE_OLEGUID in mapiguid.h.
     // see http://doc.ddart.net/msdn/header/include/mapiguid.h.html
-    
-    public const OLE_GUID = '{${prefix}-0000-0000-c000-000000000046}';
 
     public const NAMES = [
         '00020328' => 'PS_MAPI',
@@ -39,34 +38,95 @@ class PropertySetConstants
         '0006200a' => 'PSETID_Log',
     ];
 
-    protected static function get($offset)
+    private const OLE_GUID = '{${prefix}-0000-0000-c000-000000000046}';
+
+    protected static function get(string $offset): OleGuidInterface
     {
         static $lookup = [];
-        if (isset($lookup[$offset])) return $lookup[$offset];
+        if (isset($lookup[$offset])) {
+            return $lookup[$offset];
+        }
 
         $guid = array_search($offset, static::NAMES);
-        if ($guid === false) return null;
+        if ($guid === false) {
+            throw new \RuntimeException(sprintf('offset %s not found', $offset));
+        }
 
-        $guid = str_replace('${prefix}', $guid, static::OLE_GUID);
+        $guid = str_replace('${prefix}', $guid, self::OLE_GUID);
         $guid = OleGuid::fromString($guid);
 
         $lookup[$offset] = $guid;
+
         return $guid;
     }
 
-    public function __get($offset)
+    public static function PS_MAPI(): OleGuidInterface
     {
-        return static::get($offset);
+        return self::get('PS_MAPI');
     }
 
-    public static function __callStatic($name, $args)
+    public static function PS_PUBLIC_STRINGS(): OleGuidInterface
     {
-        $ret = static::get($name);
-        if (is_null($ret)) {
-            throw new \RuntimeException('Unknown constant '.$name);
-        }
-        return $ret;
+        return self::get('PS_PUBLIC_STRINGS');
     }
 
+    public static function PS_ROUTING_EMAIL_ADDRESSES(): OleGuidInterface
+    {
+        return self::get('PS_ROUTING_EMAIL_ADDRESSES');
+    }
 
+    public static function PS_ROUTING_ADDRTYPE(): OleGuidInterface
+    {
+        return self::get('PS_ROUTING_ADDRTYPE');
+    }
+
+    public static function PS_ROUTING_DISPLAY_NAME(): OleGuidInterface
+    {
+        return self::get('PS_ROUTING_DISPLAY_NAME');
+    }
+
+    public static function PS_ROUTING_ENTRYID(): OleGuidInterface
+    {
+        return self::get('PS_ROUTING_ENTRYID');
+    }
+
+    public static function PS_ROUTING_SEARCH_KEY(): OleGuidInterface
+    {
+        return self::get('PS_ROUTING_SEARCH_KEY');
+    }
+
+    public static function PS_INTERNET_HEADERS(): OleGuidInterface
+    {
+        return self::get('PS_INTERNET_HEADERS');
+    }
+
+    public static function PSETID_Appointment(): OleGuidInterface
+    {
+        return self::get('PSETID_Appointment');
+    }
+
+    public static function PSETID_Task(): OleGuidInterface
+    {
+        return self::get('PSETID_Task');
+    }
+
+    public static function PSETID_Address(): OleGuidInterface
+    {
+        return self::get('PSETID_Address');
+    }
+
+    public static function PSETID_Common(): OleGuidInterface
+    {
+        return self::get('PSETID_Common');
+    }
+
+    public static function PSETID_Note(): OleGuidInterface
+    {
+        return self::get('PSETID_Note');
+    }
+
+    public static function PSETID_Log(): OleGuidInterface
+    {
+        return self::get('PSETID_Log');
+    }
 }

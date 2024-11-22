@@ -2,30 +2,26 @@
 
 namespace Hfig\MAPI\OLE\Pear;
 
-class StreamWrapper 
+class StreamWrapper
 {
-    const PROTOCOL = 'olewrap';
+    public const PROTOCOL = 'olewrap';
 
     private $stream;
     public $context;
-    private $mode;
-    private $buffer;
-    private $position;
 
+    private string|bool|null $buffer = null;
 
-    private static $handles = [];
+    private static array $handles = [];
 
     public static function wrapStream($stream, $mode): string
     {
         self::register();
 
-        $data = ['mode' => $mode, 'stream' => $stream];
+        $data            = ['mode' => $mode, 'stream' => $stream];
         self::$handles[] = $data;
+        $key             = array_key_last(self::$handles);
 
-        end(self::$handles);
-        $key = key(self::$handles);
-
-        return 'olewrap://stream/' . (string)$key;
+        return 'olewrap://stream/'.(string) $key;
     }
 
     /**
@@ -34,14 +30,14 @@ class StreamWrapper
     public static function createStreamContext($stream)
     {
         return stream_context_create([
-            'olewrap' => ['stream' => $stream]
+            'olewrap' => ['stream' => $stream],
         ]);
     }
 
     public static function register(): void
     {
         if (!in_array('olewrap', stream_get_wrappers())) {
-            stream_wrapper_register('olewrap', __CLASS__);
+            stream_wrapper_register('olewrap', self::class);
         }
     }
 
@@ -50,14 +46,12 @@ class StreamWrapper
         return $this->stream;
     }
 
-
     public function stream_open($path, $mode, $options, &$opened_path): bool
-    { 
-        $url = parse_url($path);
+    {
+        $url        = parse_url((string) $path);
         $streampath = [];
-        $handle = null;
-        
-        
+        $handle     = null;
+
         if (isset($url['path'])) {
             $streampath = explode('/', $url['path']);
         }
@@ -68,13 +62,10 @@ class StreamWrapper
             $this->stream = self::$handles[$handle]['stream'];
 
             if ($mode[0] == 'r' || $mode[0] == 'a') {
-                fseek($this->stream, 0);            
+                fseek($this->stream, 0);
             }
 
             $this->buffer = '';
-            $this->position = 0;
-                    
-            
 
             return true;
         }
@@ -87,22 +78,15 @@ class StreamWrapper
         // always read a block to satisfy the buffer
         $this->buffer = fread($this->stream, 8192);
 
-
         return substr($this->buffer, 0, $count);
     }
 
-    /**
-     * @return false|int
-     */
-    public function stream_write($data)
+    public function stream_write($data): int|false
     {
-        return fwrite($this->stream, $data);
+        return fwrite($this->stream, (string) $data);
     }
 
-    /**
-     * @return false|int
-     */
-    public function stream_tell()
+    public function stream_tell(): int|false
     {
         return ftell($this->stream);
     }
@@ -114,14 +98,11 @@ class StreamWrapper
 
     public function stream_seek($offset, $whence): int
     {
-        //echo 'seeking on parent stream (' . $offset . '  ' . $whence . ')'."\n";
+        // echo 'seeking on parent stream (' . $offset . '  ' . $whence . ')'."\n";
         return fseek($this->stream, $offset, $whence);
     }
 
-    /**
-     * @return array|false
-     */
-    public function stream_stat()
+    public function stream_stat(): array|false
     {
         return fstat($this->stream);
     }
@@ -141,7 +122,7 @@ class StreamWrapper
             'mtime'   => 0,
             'ctime'   => 0,
             'blksize' => 0,
-            'blocks'  => 0
+            'blocks'  => 0,
         ];
     }
 }

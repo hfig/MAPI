@@ -6,85 +6,72 @@ use Symfony\Component\Yaml\Yaml;
 
 class PropertySet implements \ArrayAccess
 {
-    const SCHEMA_DIR = __DIR__ . '/../Schema';
+    public const SCHEMA_DIR = __DIR__.'/../Schema';
 
-    /** @var PropertyStore */
-    private $store;
-
-    /** @var PropertyCollection */
-    private $raw;
+    private PropertyCollection $raw;
 
     private static $tagsMsg;
     private static $tagsOther;
-    private $map = [];
+    private array $map = [];
 
-
-    public function __construct(PropertyStore $store)
+    public function __construct(private readonly PropertyStore $store)
     {
-        $this->store = $store;
-        $this->raw = $store->getCollection();
+        $this->raw = $this->store->getCollection();
 
         if (!self::$tagsMsg || !self::$tagsOther) {
-            self::init();
+            $this->init();
         }
 
         $this->map();
-    
     }
 
-    private static function init(): void
+    private function init(): void
     {
-        self::$tagsMsg   = Yaml::parseFile(self::SCHEMA_DIR . '/MapiFieldsMessage.yaml');
-        self::$tagsOther = Yaml::parseFile(self::SCHEMA_DIR . '/MapiFieldsOther.yaml');
+        self::$tagsMsg   = Yaml::parseFile(self::SCHEMA_DIR.'/MapiFieldsMessage.yaml');
+        self::$tagsOther = Yaml::parseFile(self::SCHEMA_DIR.'/MapiFieldsOther.yaml');
 
         foreach (self::$tagsOther as $propSet => $props) {
-            $guid = (string)PropertySetConstants::$propSet();
-            if ($guid) {
+            $guid = (string) PropertySetConstants::$propSet();
+            if ($guid !== '' && $guid !== '0') {
                 self::$tagsOther[$guid] = $props;
                 unset(self::$tagsOther[$propSet]);
             }
         }
     }
-    
+
     protected function map(): void
     {
-        //print_r($this->raw->keys());
+        // print_r($this->raw->keys());
 
         foreach ($this->raw->keys() as $key) {
-            //echo sprintf('Mapping %s %s'."\n", $key->getGuid(), $key->getCode());
+            // echo sprintf('Mapping %s %s'."\n", $key->getGuid(), $key->getCode());
 
-            if ((string)$key->getGuid() == (string)PropertySetConstants::PS_MAPI()) {
+            if ((string) $key->getGuid() === (string) PropertySetConstants::PS_MAPI()) {
                 // read from tagsMsg
-                //echo '  Seeking '.sprintf('%04x', $key->getCode())."\n";
-                $propertyName  = strtolower($key->getCode());
+                // echo '  Seeking '.sprintf('%04x', $key->getCode())."\n";
+                $propertyName  = strtolower((string) $key->getCode());
                 $schemaElement = self::$tagsMsg[sprintf('%04x', $key->getCode())] ?? null;
-                if ($schemaElement) {                    
-                    $propertyName = strtolower(preg_replace('/^[^_]*_/', '', $schemaElement[0]));
-                    //echo '    Found msg '.$propertyName."\n";
+                if ($schemaElement) {
+                    $propertyName = strtolower(preg_replace('/^[^_]*_/', '', (string) $schemaElement[0]));
+                    // echo '    Found msg '.$propertyName."\n";
                 }
                 $this->map[$propertyName] = $key;
-            }
-            else {
+            } else {
                 // read from tagsOther
-                $propertyName = strtolower($key->getCode());
-                $schemaElement = self::$tagsOther[(string)$key->getGuid()][$key->getCode()] ?? null;
+                $propertyName  = strtolower((string) $key->getCode());
+                $schemaElement = self::$tagsOther[(string) $key->getGuid()][$key->getCode()] ?? null;
                 if ($schemaElement) {
-                    $propertyName = $schemaElement;                    
-                    //echo '    Found other '.$propertyName."\n";
+                    $propertyName = $schemaElement;
+                    // echo '    Found other '.$propertyName."\n";
                 }
                 $this->map[$propertyName] = $key;
             }
         }
-
     }
-
 
     protected function resolveName($name)
     {
-        if (isset($this->map[$name])) {
-            return $this->map[$name];
-        }
-        return new PropertyKey($name);
+        return $this->map[$name] ?? new PropertyKey($name);
     }
 
     protected function resolveKey($code, $guid = null)
@@ -92,12 +79,13 @@ class PropertySet implements \ArrayAccess
         if (is_string($code) && is_null($guid)) {
             return $this->resolveName($code);
         }
+
         return new PropertyKey($code, $guid);
     }
 
     /* public methods */
 
-    public function getStore()
+    public function getStore(): PropertyStore
     {
         return $this->store;
     }
@@ -105,19 +93,17 @@ class PropertySet implements \ArrayAccess
     public function get($code, $guid = null)
     {
         $val = $this->raw->get($this->resolveKey($code, $guid));
-        
+
         // resolve streams when they're requested
         if (is_callable($val)) {
-            
             $val = $val();
-           
         }
 
         return $val;
     }
 
     public function set($code, $value, $guid = null): void
-    {        
+    {
         $this->raw->set($this->resolveKey($code, $guid), $value);
     }
 
@@ -133,22 +119,18 @@ class PropertySet implements \ArrayAccess
         return $this->get($name);
     }
 
-    public function __set($name, $value)
+    public function __set($name, $value): void
     {
-        return $this->set($name, $value);
+        $this->set($name, $value);
     }
 
     public function offsetExists($offset): bool
     {
-        //return (!is_null($this->get($offset)));
-        return (!is_null($this->raw->get($this->resolveKey($offset))));
+        // return (!is_null($this->get($offset)));
+        return !is_null($this->raw->get($this->resolveKey($offset)));
     }
 
-    /**
-     * @return mixed
-     */
-    #[\ReturnTypeWillChange]
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->get($offset);
     }

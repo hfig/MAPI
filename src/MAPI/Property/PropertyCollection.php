@@ -4,11 +4,11 @@ namespace Hfig\MAPI\Property;
 
 class PropertyCollection implements \IteratorAggregate
 {
-    private $col = [];
+    private array $col = [];
 
     public function set(PropertyKey $key, $value): void
     {
-        //echo sprintf('Setting for %s %s'."\n", $key->getCode(), $key->getGuid());
+        // echo sprintf('Setting for %s %s'."\n", $key->getCode(), $key->getGuid());
         $this->col[$key->getHash()] = ['key' => $key, 'value' => $value];
     }
 
@@ -23,6 +23,7 @@ class PropertyCollection implements \IteratorAggregate
         if (is_null($bucket)) {
             return null;
         }
+
         return $bucket['value'];
     }
 
@@ -33,16 +34,12 @@ class PropertyCollection implements \IteratorAggregate
 
     public function keys(): array
     {
-        return array_map(function($bucket) {
-            return $bucket['key'];
-        }, $this->col);
+        return array_map(fn ($bucket) => $bucket['key'], $this->col);
     }
 
     public function values(): array
     {
-        return array_map(function($bucket) {
-            return $bucket['value'];
-        }, $this->col);
+        return array_map(fn ($bucket) => $bucket['value'], $this->col);
     }
 
     public function getIterator(): \Traversable
@@ -51,5 +48,4 @@ class PropertyCollection implements \IteratorAggregate
             yield $bucket['key'] => $bucket['value'];
         }
     }
-
 }

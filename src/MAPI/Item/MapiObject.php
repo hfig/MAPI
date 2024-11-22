@@ -4,12 +4,7 @@ namespace Hfig\MAPI\Item;
 
 class MapiObject
 {
-    protected $properties;
-
-    public function __construct($properties)
+    public function __construct(protected $properties)
     {
-        $this->properties = $properties;
     }
-
-
 }

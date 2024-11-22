@@ -5,11 +5,9 @@ namespace Hfig\MAPI\Mime\Swiftmailer;
 use Hfig\MAPI\Mime\ConversionFactory;
 use Hfig\MAPI\OLE\CompoundDocumentElement as Element;
 
-
 class Factory implements ConversionFactory
 {
-
-    protected $muteConversionExceptions;
+    protected bool $muteConversionExceptions;
 
     public function __construct(bool $muteConversionExceptions = false)
     {

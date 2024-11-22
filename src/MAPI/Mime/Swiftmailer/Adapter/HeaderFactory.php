@@ -2,19 +2,14 @@
 
 namespace Hfig\MAPI\Mime\Swiftmailer\Adapter;
 
-use \Swift_Mime_SimpleHeaderFactory;
-use \Swift_Mime_HeaderEncoder;
-use \Swift_Mime_Header;
-use \Swift_Encoder;
-use \Swift_AddressEncoder;
 use Egulias\EmailValidator\EmailValidator;
 
-class HeaderFactory extends Swift_Mime_SimpleHeaderFactory
+class HeaderFactory extends \Swift_Mime_SimpleHeaderFactory
 {
     protected $encoder;
     protected $charset;
 
-    public function __construct(Swift_Mime_HeaderEncoder $encoder, Swift_Encoder $paramEncoder, EmailValidator $emailValidator, $charset = null, Swift_AddressEncoder $addressEncoder = null)
+    public function __construct(\Swift_Mime_HeaderEncoder $encoder, \Swift_Encoder $paramEncoder, EmailValidator $emailValidator, $charset = null, ?\Swift_AddressEncoder $addressEncoder = null)
     {
         parent::__construct($encoder, $paramEncoder, $emailValidator, $charset, $addressEncoder);
 
@@ -33,9 +28,9 @@ class HeaderFactory extends Swift_Mime_SimpleHeaderFactory
         return $header;
     }
 
-    protected function setHeaderCharset(Swift_Mime_Header $header): void
+    protected function setHeaderCharset(\Swift_Mime_Header $header): void
     {
-        if (isset($this->charset)) {
+        if ($this->charset !== null) {
             $header->setCharset($this->charset);
         }
     }
