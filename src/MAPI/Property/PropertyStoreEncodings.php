@@ -25,7 +25,7 @@ class PropertyStoreEncodings
 
     public static function decode0x001e(Element $e)
     {
-        return trim($e->getData());
+        return trim((string) $e->getData());
     }
 
     public static function decode0x0102(Element $e)
@@ -62,8 +62,6 @@ class PropertyStoreEncodings
 
     public static function decodeFunction($encoding, Element $e)
     {
-        return function () use ($encoding, $e) {
-            return PropertyStoreEncodings::decode($encoding, $e);
-        };
+        return fn () => PropertyStoreEncodings::decode($encoding, $e);
     }
 }

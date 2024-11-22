@@ -6,22 +6,20 @@ namespace Hfig\MAPI\OLE\RTF;
 // it seemed like a moderately useful concept, even though the
 // parser logic in the ruby-msg library (and ported) is pretty awful
 
-class StringScanner
+class StringScanner implements \Stringable
 {
-    private $buffer;
     private $pos;
     private $last;
 
-    public function __construct($data)
+    public function __construct(private $buffer)
     {
-        $this->buffer = $data;
-        $this->pos    = 0;
+        $this->pos = 0;
     }
 
     public function scan($str)
     {
-        $len = strlen($str);
-        if (substr($this->buffer, $this->pos, $len) == $str) {
+        $len = strlen((string) $str);
+        if (substr((string) $this->buffer, $this->pos, $len) == $str) {
             $this->pos += $len;
             $this->last = $str;
 
@@ -33,7 +31,7 @@ class StringScanner
 
     public function scanRegex($regex)
     {
-        if (preg_match($regex, $this->buffer, $matches, PREG_OFFSET_CAPTURE, $this->pos)) {
+        if (preg_match($regex, (string) $this->buffer, $matches, PREG_OFFSET_CAPTURE, $this->pos)) {
             if ($matches[0][1] == $this->pos) {
                 $this->pos += strlen($matches[0][0]);
                 $this->last = $matches;
@@ -47,9 +45,9 @@ class StringScanner
 
     public function scanUntil($str)
     {
-        if (($newpos = strpos($this->buffer, $str, $this->pos)) !== false) {
-            $this->last = substr($this->buffer, $this->pos, $newpos - $this->pos);
-            $this->pos  = $newpos + strlen($str);
+        if (($newpos = strpos((string) $this->buffer, (string) $str, $this->pos)) !== false) {
+            $this->last = substr((string) $this->buffer, $this->pos, $newpos - $this->pos);
+            $this->pos  = $newpos + strlen((string) $str);
 
             return $this->last;
         }
@@ -59,9 +57,9 @@ class StringScanner
 
     public function scanUntilRegex($regex)
     {
-        if (preg_match($regex, $this->buffer, $matches, PREG_OFFSET_CAPTURE, $this->pos)) {
+        if (preg_match($regex, (string) $this->buffer, $matches, PREG_OFFSET_CAPTURE, $this->pos)) {
             $mlen       = strlen($matches[0][0]);
-            $this->last = substr($this->buffer, $this->pos, $matches[0][1] + $mlen);
+            $this->last = substr((string) $this->buffer, $this->pos, $matches[0][1] + $mlen);
             $this->pos  = $matches[0][1] + $mlen;
 
             return $this->last;
@@ -72,12 +70,12 @@ class StringScanner
 
     public function eos(): bool
     {
-        return $this->pos >= strlen($this->buffer);
+        return $this->pos >= strlen((string) $this->buffer);
     }
 
     public function increment($count = 1)
     {
-        $this->last = substr($this->buffer, $this->pos, $count);
+        $this->last = substr((string) $this->buffer, $this->pos, $count);
         $this->pos += $count;
 
         return $this->last;
@@ -88,8 +86,8 @@ class StringScanner
         return $this->last;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
-        return substr($this->buffer, $this->pos);
+        return substr((string) $this->buffer, $this->pos);
     }
 }

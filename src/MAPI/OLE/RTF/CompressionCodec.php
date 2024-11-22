@@ -20,7 +20,7 @@ class CompressionCodec
 
         $pos   = self::HEADERSIZE;
         $data  = '';
-        $eof   = strlen($raw);
+        $eof   = strlen((string) $raw);
         $flags = 0;
 
         while ($pos < $eof && strlen($data) < $uncompressedSize) {
@@ -78,11 +78,11 @@ class CompressionCodec
         // echo 'Data: ' . bin2hex($data), "\n";
         // echo 'Len: ' . strlen($data), "\n";
 
-        $header                                              = array_values(unpack('Vcs/Vus/a4m/Vcrc', $data));
+        $header                                              = array_values(unpack('Vcs/Vus/a4m/Vcrc', (string) $data));
         [$compressedSize, $uncompressedSize, $magic, $crc32] = $header;
 
         if ($magic == 'MELA') {
-            $data = substr($data, self::HEADERSIZE, $uncompressedSize);
+            $data = substr((string) $data, self::HEADERSIZE, $uncompressedSize);
         } elseif ($magic == 'LZFu') {
             $data = self::uncompress($data, $compressedSize, $uncompressedSize);
         } else {
@@ -99,7 +99,7 @@ class CompressionCodec
      */
     public static function encode($data)
     {
-        $uncompressedSize = strlen($data);
+        $uncompressedSize = strlen((string) $data);
         $compressedSize   = $uncompressedSize + self::HEADERSIZE;
 
         return pack('V/V/a4/V/a*', $compressedSize, $uncompressedSize, 'MELA', $data);

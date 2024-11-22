@@ -2,7 +2,7 @@
 
 namespace Hfig\MAPI\Item;
 
-class Recipient extends MapiObject
+class Recipient extends MapiObject implements \Stringable
 {
     public const RECIPIENT_TYPES = [
         0 => 'From',
@@ -21,7 +21,7 @@ class Recipient extends MapiObject
     {
         $name = $this->properties['transmittable_display_name'] ?? $this->properties['display_name'] ?? '';
 
-        return preg_replace('/^\'(.*)\'/', '\1', $name);
+        return preg_replace('/^\'(.*)\'/', '\1', (string) $name);
     }
 
     public function getEmail()
@@ -32,11 +32,8 @@ class Recipient extends MapiObject
     public function getType()
     {
         $type = $this->properties['recipient_type'];
-        if (isset(static::RECIPIENT_TYPES[$type])) {
-            return static::RECIPIENT_TYPES[$type];
-        }
 
-        return $type;
+        return static::RECIPIENT_TYPES[$type] ?? $type;
     }
 
     public function getAddressType()
@@ -57,7 +54,7 @@ class Recipient extends MapiObject
         return 'Unknown';*/
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         $name  = $this->getName();
         $email = $this->getEmail();
@@ -68,6 +65,6 @@ class Recipient extends MapiObject
             return sprintf('%s <%s>', $name, $email);
         }
 
-        return $email ?: $name;
+        return (string) ($email ?: $name);
     }
 }

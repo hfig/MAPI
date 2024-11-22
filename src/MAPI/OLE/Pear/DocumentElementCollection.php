@@ -4,19 +4,16 @@ namespace Hfig\MAPI\OLE\Pear;
 
 class DocumentElementCollection implements \ArrayAccess, \IteratorAggregate
 {
-    /** @var \OLE */
-    private $ole;
     private $col       = [];
     private $proxy_col = [];
 
-    public function __construct(\OLE $ole, ?array &$collection = null)
+    public function __construct(private readonly \OLE $ole, ?array &$collection = null)
     {
         if (is_null($collection)) {
             $tmpcol     = [];
             $collection = &$tmpcol;
         }
         $this->col = &$collection;
-        $this->ole = $ole;
     }
 
     public function getIterator(): \Traversable

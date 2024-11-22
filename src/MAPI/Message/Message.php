@@ -51,7 +51,7 @@ class Message extends MessageItem
     protected function buildAttachments()
     {
         foreach ($this->obj->getChildren() as $child) {
-            if ($child->isDirectory() && preg_match(self::ATTACH_RX, $child->getName())) {
+            if ($child->isDirectory() && preg_match(self::ATTACH_RX, (string) $child->getName())) {
                 $attachment = new Attachment($child, $this);
                 if ($attachment->isValid()) {
                     $this->attachments[] = $attachment;
@@ -63,7 +63,7 @@ class Message extends MessageItem
     protected function buildRecipients()
     {
         foreach ($this->obj->getChildren() as $child) {
-            if ($child->isDirectory() && preg_match(self::RECIP_RX, $child->getName())) {
+            if ($child->isDirectory() && preg_match(self::RECIP_RX, (string) $child->getName())) {
                 // echo 'Got child . ' . $child->getName() . "\n";
 
                 $recipient          = new Recipient($child, $this);
@@ -148,7 +148,7 @@ class Message extends MessageItem
             $this->bodyHTML = $this->properties['body_html'];
 
             if ($this->bodyHTML) {
-                $this->bodyHTML = trim($this->bodyHTML);
+                $this->bodyHTML = trim((string) $this->bodyHTML);
             }
         }
 

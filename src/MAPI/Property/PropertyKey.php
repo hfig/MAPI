@@ -4,18 +4,15 @@ namespace Hfig\MAPI\Property;
 
 class PropertyKey
 {
-    private $code;
     private $guid;
 
-    public function __construct($code, $guid = null)
+    public function __construct(private $code, $guid = null)
     {
         if (!$guid) {
             $guid = PropertySetConstants::PS_MAPI();
         }
 
-        $guid = (string) $guid;
-
-        $this->code = $code;
+        $guid       = (string) $guid;
         $this->guid = $guid;
 
         // echo '  Created with code ' . $code . "\n";

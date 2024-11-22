@@ -19,12 +19,12 @@ class OleTime
      */
     public static function getTimeFromOleTime($string)
     {
-        if (strlen($string) !== 8) {
+        if (strlen((string) $string) !== 8) {
             return 0;
         }
 
         // date is encoded as little endian integer
-        $big_date = unpack('P', $string)[1];
+        $big_date = unpack('P', (string) $string)[1];
 
         // translate to seconds
         $big_date /= 10000000;

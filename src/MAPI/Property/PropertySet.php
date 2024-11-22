@@ -8,9 +8,6 @@ class PropertySet implements \ArrayAccess
 {
     public const SCHEMA_DIR = __DIR__.'/../Schema';
 
-    /** @var PropertyStore */
-    private $store;
-
     /** @var PropertyCollection */
     private $raw;
 
@@ -18,10 +15,9 @@ class PropertySet implements \ArrayAccess
     private static $tagsOther;
     private $map = [];
 
-    public function __construct(PropertyStore $store)
+    public function __construct(private readonly PropertyStore $store)
     {
-        $this->store = $store;
-        $this->raw   = $store->getCollection();
+        $this->raw = $this->store->getCollection();
 
         if (!self::$tagsMsg || !self::$tagsOther) {
             self::init();
@@ -54,16 +50,16 @@ class PropertySet implements \ArrayAccess
             if ((string) $key->getGuid() == (string) PropertySetConstants::PS_MAPI()) {
                 // read from tagsMsg
                 // echo '  Seeking '.sprintf('%04x', $key->getCode())."\n";
-                $propertyName  = strtolower($key->getCode());
+                $propertyName  = strtolower((string) $key->getCode());
                 $schemaElement = self::$tagsMsg[sprintf('%04x', $key->getCode())] ?? null;
                 if ($schemaElement) {
-                    $propertyName = strtolower(preg_replace('/^[^_]*_/', '', $schemaElement[0]));
+                    $propertyName = strtolower(preg_replace('/^[^_]*_/', '', (string) $schemaElement[0]));
                     // echo '    Found msg '.$propertyName."\n";
                 }
                 $this->map[$propertyName] = $key;
             } else {
                 // read from tagsOther
-                $propertyName  = strtolower($key->getCode());
+                $propertyName  = strtolower((string) $key->getCode());
                 $schemaElement = self::$tagsOther[(string) $key->getGuid()][$key->getCode()] ?? null;
                 if ($schemaElement) {
                     $propertyName = $schemaElement;
@@ -76,11 +72,7 @@ class PropertySet implements \ArrayAccess
 
     protected function resolveName($name)
     {
-        if (isset($this->map[$name])) {
-            return $this->map[$name];
-        }
-
-        return new PropertyKey($name);
+        return $this->map[$name] ?? new PropertyKey($name);
     }
 
     protected function resolveKey($code, $guid = null)

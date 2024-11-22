@@ -34,7 +34,7 @@ class Message extends BaseMessage implements MimeConvertible
         $headers = $this->translatePropertyHeaders();
 
         // add them to the message
-        $add = [$message, 'setTo']; // function
+        $add = $message->setTo(...); // function
         try {
             $this->addRecipientHeaders('To', $headers, $add);
         } catch (\Swift_RfcComplianceException $e) {
@@ -45,7 +45,7 @@ class Message extends BaseMessage implements MimeConvertible
         }
         $headers->unset('To');
 
-        $add = [$message, 'setCc']; // function
+        $add = $message->setCc(...); // function
         try {
             $this->addRecipientHeaders('Cc', $headers, $add);
         } catch (\Swift_RfcComplianceException $e) {
@@ -56,7 +56,7 @@ class Message extends BaseMessage implements MimeConvertible
         }
         $headers->unset('Cc');
 
-        $add = [$message, 'setBcc']; // function
+        $add = $message->setBcc(...); // function
         try {
             $this->addRecipientHeaders('Bcc', $headers, $add);
         } catch (\Swift_RfcComplianceException $e) {
@@ -67,7 +67,7 @@ class Message extends BaseMessage implements MimeConvertible
         }
         $headers->unset('Bcc');
 
-        $add = [$message, 'setFrom']; // function
+        $add = $message->setFrom(...); // function
         try {
             $this->addRecipientHeaders('From', $headers, $add);
         } catch (\Swift_RfcComplianceException $e) {
@@ -79,7 +79,7 @@ class Message extends BaseMessage implements MimeConvertible
         $headers->unset('From');
 
         try {
-            $message->setId(trim($headers->getValue('Message-ID'), '<>'));
+            $message->setId(trim((string) $headers->getValue('Message-ID'), '<>'));
         } catch (\Swift_RfcComplianceException $e) {
             if (!$this->muteConversionExceptions) {
                 throw $e;
@@ -112,7 +112,7 @@ class Message extends BaseMessage implements MimeConvertible
         $hasHtml      = false;
         $bodyBoundary = '';
         if ($boundary) {
-            if (preg_match('~^_(\d\d\d)_([^_]+)_~', $boundary, $matches)) {
+            if (preg_match('~^_(\d\d\d)_([^_]+)_~', (string) $boundary, $matches)) {
                 $bodyBoundary = sprintf('_%03d_%s_', (int) $matches[1] + 1, $matches[2]);
             }
         }
@@ -203,7 +203,7 @@ class Message extends BaseMessage implements MimeConvertible
 
         $map = [];
         foreach ($recipient as $r) {
-            if (preg_match('/^((?:"[^"]*")|.+) (<.+>)$/', $r, $matches)) {
+            if (preg_match('/^((?:"[^"]*")|.+) (<.+>)$/', (string) $r, $matches)) {
                 $map[trim($matches[2], '<>')] = $matches[1];
             } else {
                 $map[] = $r;
@@ -238,7 +238,7 @@ class Message extends BaseMessage implements MimeConvertible
         $transport    = [];
         $transportKey = 0;
 
-        $transportRaw = explode("\r\n", $this->properties['transport_message_headers']);
+        $transportRaw = explode("\r\n", (string) $this->properties['transport_message_headers']);
         foreach ($transportRaw as $v) {
             if (!$v) {
                 continue;
@@ -282,7 +282,7 @@ class Message extends BaseMessage implements MimeConvertible
                                                                ?? $this->properties['last_modification_time'] ?? $this->properties['creation_time'] ?? null;
             if (!is_null($date)) {
                 // ruby-msg suggests this is stored as an iso8601 timestamp in the message properties, not a Windows timestamp
-                $date = date('r', strtotime($date));
+                $date = date('r', strtotime((string) $date));
                 $rawHeaders->set('Date', $date);
             }
         }
@@ -292,9 +292,9 @@ class Message extends BaseMessage implements MimeConvertible
             ['internet_message_id', 'Message-ID'],
             ['in_reply_to_id',      'In-Reply-To'],
 
-            ['importance',          'Importance',  function ($val) { return ($val == '1') ? null : $val; }],
-            ['priority',            'Priority',    function ($val) { return ($val == '1') ? null : $val; }],
-            ['sensitivity',         'Sensitivity', function ($val) { return ($val == '0') ? null : $val; }],
+            ['importance',          'Importance',  fn ($val) => ($val == '1') ? null : $val],
+            ['priority',            'Priority',    fn ($val) => ($val == '1') ? null : $val],
+            ['sensitivity',         'Sensitivity', fn ($val) => ($val == '0') ? null : $val],
 
             ['conversation_topic',  'Thread-Topic'],
 
@@ -303,7 +303,7 @@ class Message extends BaseMessage implements MimeConvertible
             ['read_receipt_requested', 'Disposition-Notification-To', function ($val) use ($rawHeaders) {
                 $from = $rawHeaders->getValue('From');
 
-                if (preg_match('/^((?:"[^"]*")|.+) (<.+>)$/', $from, $matches)) {
+                if (preg_match('/^((?:"[^"]*")|.+) (<.+>)$/', (string) $from, $matches)) {
                     $from = trim($matches[2], '<>');
                 }
 
@@ -327,7 +327,7 @@ class Message extends BaseMessage implements MimeConvertible
     {
         // firstly - use the value in the headers
         if ($type = $headers->getValue('Content-Type')) {
-            if (preg_match('~boundary="([a-zA-z0-9\'()+_,-.\/:=? ]+)"~', $type, $matches)) {
+            if (preg_match('~boundary="([a-zA-z0-9\'()+_,-.\/:=? ]+)"~', (string) $type, $matches)) {
                 return $matches[1];
             }
         }
@@ -336,7 +336,7 @@ class Message extends BaseMessage implements MimeConvertible
         // this is done using the message id
         if ($mid = $headers->getValue('Message-ID')) {
             $recount = 0;
-            $mid     = preg_replace('~[^a-zA-z0-9\'()+_,-.\/:=? ]~', '', $mid, -1, $recount);
+            $mid     = preg_replace('~[^a-zA-z0-9\'()+_,-.\/:=? ]~', '', (string) $mid, -1, $recount);
             $mid     = substr($mid, 0, 55);
 
             return sprintf('_%03d_%s_', $recount, $mid);

@@ -23,17 +23,15 @@ class PropertyStore
     /** @var PropertyCollection */
     protected $cache;
     protected $nameId;
-    protected $parentNameId;
 
     /** @var LoggerInterface */
     protected $logger;
 
-    public function __construct(?Element $obj = null, $nameId = null, ?LoggerInterface $logger = null)
+    public function __construct(?Element $obj = null, protected $parentNameId = null, ?LoggerInterface $logger = null)
     {
-        $this->cache        = new PropertyCollection();
-        $this->nameId       = null;
-        $this->parentNameId = $nameId;
-        $this->logger       = $logger ?? new NullLogger();
+        $this->cache  = new PropertyCollection();
+        $this->nameId = null;
+        $this->logger = $logger ?? new NullLogger();
 
         if ($obj) {
             $this->load($obj);
@@ -44,7 +42,7 @@ class PropertyStore
     {
         // # find name_id first
         foreach ($obj->getChildren() as $child) {
-            if (preg_match(self::NAMEID_RX, $child->getName())) {
+            if (preg_match(self::NAMEID_RX, (string) $child->getName())) {
                 $this->nameId = $this->parseNameId($child);
             }
         }
@@ -54,9 +52,9 @@ class PropertyStore
 
         foreach ($obj->getChildren() as $child) {
             if ($child->isFile()) {
-                if (preg_match(self::PROPERTIES_RX, $child->getName())) {
+                if (preg_match(self::PROPERTIES_RX, (string) $child->getName())) {
                     $this->parseProperties($child);
-                } elseif (preg_match(self::SUBSTG_RX, $child->getName(), $matches)) {
+                } elseif (preg_match(self::SUBSTG_RX, (string) $child->getName(), $matches)) {
                     $key      = hexdec($matches[1]);
                     $encoding = hexdec($matches[2]);
                     $offset   = hexdec($matches[3] ?? '0');
@@ -97,7 +95,7 @@ class PropertyStore
         // # Scan using an ascii pattern - it's binary data we're looking
         // # at, so we don't want to look for unicode characters
         $guids   = [PropertySetConstants::PS_PUBLIC_STRINGS()];
-        $rawGuid = str_split($knownPpsObj['guids']->getData(), 16);
+        $rawGuid = str_split((string) $knownPpsObj['guids']->getData(), 16);
         foreach ($rawGuid as $guid) {
             if (strlen($guid) == 16) {
                 $guids[] = OleGuid::fromBytes($guid);
@@ -118,7 +116,7 @@ class PropertyStore
         // # at, so we don't want to look for unicode characters
         $propsData  = $knownPpsObj['props']->getData();
         $properties = [];
-        foreach (str_split($propsData, 8) as $idx => $rawProp) {
+        foreach (str_split((string) $propsData, 8) as $idx => $rawProp) {
             if (strlen($rawProp) < 8) {
                 break;
             }
@@ -133,11 +131,11 @@ class PropertyStore
             $prop        = '';
             if ($named) {
                 $str_off = unpack('V', $rawProp)[1];
-                if (strlen($namesData) - $str_off < 4) {
+                if (strlen((string) $namesData) - $str_off < 4) {
                     continue;
                 } // not sure with this, but at least it will not read outside the bounds and crash
-                $len  = unpack('V', substr($namesData, $str_off, 4))[1];
-                $data = substr($namesData, $str_off + 4, $len);
+                $len  = unpack('V', substr((string) $namesData, $str_off, 4))[1];
+                $data = substr((string) $namesData, $str_off + 4, $len);
                 $prop = mb_convert_encoding($data, 'UTF-8', 'UTF-16LE');
             } else {
                 $d = unpack('va/vb', $rawProp);
@@ -214,7 +212,7 @@ class PropertyStore
 
         // # Scan using an ascii pattern - it's binary data we're looking
         // # at, so we don't want to look for unicode characters
-        foreach (str_split(substr($data, $pad), 16) as $idx => $rawProp) {
+        foreach (str_split(substr((string) $data, $pad), 16) as $idx => $rawProp) {
             // copying ruby implementation's oddness to avoid any endianess issues
             $rawData               = unpack('V', $rawProp)[1];
             [$property, $encoding] = str_split(sprintf('%08x', $rawData), 4);

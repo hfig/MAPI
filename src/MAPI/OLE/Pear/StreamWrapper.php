@@ -20,9 +20,7 @@ class StreamWrapper
 
         $data            = ['mode' => $mode, 'stream' => $stream];
         self::$handles[] = $data;
-
-        end(self::$handles);
-        $key = key(self::$handles);
+        $key             = array_key_last(self::$handles);
 
         return 'olewrap://stream/'.(string) $key;
     }
@@ -40,7 +38,7 @@ class StreamWrapper
     public static function register(): void
     {
         if (!in_array('olewrap', stream_get_wrappers())) {
-            stream_wrapper_register('olewrap', __CLASS__);
+            stream_wrapper_register('olewrap', self::class);
         }
     }
 
@@ -51,7 +49,7 @@ class StreamWrapper
 
     public function stream_open($path, $mode, $options, &$opened_path): bool
     {
-        $url        = parse_url($path);
+        $url        = parse_url((string) $path);
         $streampath = [];
         $handle     = null;
 
@@ -90,7 +88,7 @@ class StreamWrapper
      */
     public function stream_write($data)
     {
-        return fwrite($this->stream, $data);
+        return fwrite($this->stream, (string) $data);
     }
 
     /**

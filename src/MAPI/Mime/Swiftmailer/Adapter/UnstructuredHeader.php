@@ -28,7 +28,7 @@ class UnstructuredHeader extends \Swift_Mime_Headers_UnstructuredHeader
         if (preg_match('~([\x00-\x08\x10-\x19\x7F-\xFF]|(?<!\r)\n)~', $token)) {
             $encode = true;
         }
-        if (substr($token, -2) == "\r\n") {
+        if (str_ends_with($token, "\r\n")) {
             $prevToken = $token;
         // $encode = true;
         } else {

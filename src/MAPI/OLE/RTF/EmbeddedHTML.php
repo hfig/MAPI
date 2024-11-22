@@ -9,7 +9,7 @@ class EmbeddedHTML
 
     public static function extract($data): string
     {
-        if ($pos = strpos($data, '{\*\htmltag') === false) {
+        if ($pos = !str_contains((string) $data, '{\*\htmltag')) {
             return '';
         }
 
@@ -48,7 +48,7 @@ class EmbeddedHTML
                 $html .= "\t";
             } elseif ($scanner->scanRegex('/\x5c\'([0-9A-Za-z]{2})/')) {
                 // echo 'Append char' . $scanner->result()[1][0];
-                $html .= chr(hexdec($scanner->result()[1][0]));
+                $html .= chr(hexdec((string) $scanner->result()[1][0]));
             } elseif ($scanner->scan('\pntext')) {
                 // echo 'skip to }';
                 $scanner->scanUntil('}');

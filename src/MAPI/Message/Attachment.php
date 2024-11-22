@@ -38,7 +38,7 @@ class Attachment extends AttachmentItem
         // super PropertySet.new(PropertyStore.load(@obj))
         // Msg.warn_unknown @obj
         foreach ($obj->getChildren() as $child) {
-            if ($child->isDirectory() && preg_match(PropertyStore::SUBSTG_RX, $child->getName(), $matches)) {
+            if ($child->isDirectory() && preg_match(PropertyStore::SUBSTG_RX, (string) $child->getName(), $matches)) {
                 // magic numbers??
                 if ($matches[1] == '3701' && strtolower($matches[2]) == '000d') {
                     $this->embedded_ole = $child;
@@ -60,7 +60,7 @@ class Attachment extends AttachmentItem
         $type  = null;
 
         foreach ($this->embedded_ole->getChildren() as $child) {
-            if (preg_match('/__(substg|properties|recip|attach|nameid)/', $child->getName())) {
+            if (preg_match('/__(substg|properties|recip|attach|nameid)/', (string) $child->getName())) {
                 ++$found;
                 if ($found > 2) {
                     break;
@@ -100,7 +100,7 @@ class Attachment extends AttachmentItem
             return null;
         }
 
-        return substr($compobj, 32);
+        return substr((string) $compobj, 32);
     }
 
     public function isValid(): bool

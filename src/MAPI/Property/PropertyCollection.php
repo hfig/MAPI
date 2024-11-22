@@ -34,16 +34,12 @@ class PropertyCollection implements \IteratorAggregate
 
     public function keys(): array
     {
-        return array_map(function ($bucket) {
-            return $bucket['key'];
-        }, $this->col);
+        return array_map(fn ($bucket) => $bucket['key'], $this->col);
     }
 
     public function values(): array
     {
-        return array_map(function ($bucket) {
-            return $bucket['value'];
-        }, $this->col);
+        return array_map(fn ($bucket) => $bucket['value'], $this->col);
     }
 
     public function getIterator(): \Traversable

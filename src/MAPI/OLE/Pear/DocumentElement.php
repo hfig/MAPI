@@ -7,21 +7,13 @@ use OLE;
 
 class DocumentElement implements CompoundDocumentElement
 {
-    /** @var \OLE_PPS */
-    private $pps;
-
-    /** @var \OLE */
-    private $ole;
-
     /** @var DocumentElementCollection */
     // private $wrappedChildren;
 
     // the OLE file reference is required because the member ->ole on the PPS
     // element is never actually set (ie is a bug in PEAR::OLE)
-    public function __construct(\OLE $file, \OLE_PPS $pps)
+    public function __construct(private readonly \OLE $ole, private readonly \OLE_PPS $pps)
     {
-        $this->pps = $pps;
-        $this->ole = $file;
         // $this->wrappedChildren = null;
     }
 
