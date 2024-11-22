@@ -4,18 +4,15 @@ namespace Hfig\MAPI\Property;
 
 class PropertyKey
 {
-    private string $guid;
+    private readonly string $code;
+    private readonly string $guid;
 
-    public function __construct(private $code, $guid = null)
-    {
-        if (!$guid) {
-            $guid = PropertySetConstants::PS_MAPI();
-        }
-
-        $guid       = (string) $guid;
-        $this->guid = $guid;
-
-        // echo '  Created with code ' . $code . "\n";
+    public function __construct(
+        int|string $code,
+        ?string $guid = null,
+    ) {
+        $this->code = (string) $code;
+        $this->guid = $guid ?: (string) PropertySetConstants::PS_MAPI();
     }
 
     public function getHash(): string
@@ -33,12 +30,11 @@ class PropertyKey
         return $this->guid;
     }
 
-    public static function getHashOf(string $code, $guid = null): string
+    public static function getHashOf(string $code, ?string $guid = null): string
     {
-        if (!$guid) {
-            $guid = PropertySetConstants::PS_MAPI();
+        if (empty($guid)) {
+            $guid = (string) PropertySetConstants::PS_MAPI();
         }
-        $guid = (string) $guid;
 
         return $code.'::'.$guid;
     }

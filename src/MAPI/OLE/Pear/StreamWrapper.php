@@ -8,9 +8,8 @@ class StreamWrapper
 
     private $stream;
     public $context;
-    private $mode;
+
     private string|bool|null $buffer = null;
-    private ?int $position           = null;
 
     private static array $handles = [];
 
@@ -66,8 +65,7 @@ class StreamWrapper
                 fseek($this->stream, 0);
             }
 
-            $this->buffer   = '';
-            $this->position = 0;
+            $this->buffer = '';
 
             return true;
         }

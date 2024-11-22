@@ -3,9 +3,14 @@
 namespace Hfig\MAPI\Property;
 
 use Hfig\MAPI\OLE\Guid\OleGuid;
+use Ramsey\Uuid\UuidInterface as OleGuidInterface;
 
 // ruby-msg Mapi::PropertySet
 
+/**
+ * @method static OleGuidInterface PS_MAPI()
+ * @method static OleGuidInterface PS_PUBLIC_STRINGS()
+ */
 class PropertySetConstants
 {
     // the property set guid constants

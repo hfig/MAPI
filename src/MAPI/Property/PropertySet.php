@@ -119,9 +119,9 @@ class PropertySet implements \ArrayAccess
         return $this->get($name);
     }
 
-    public function __set($name, $value)
+    public function __set($name, $value): void
     {
-        return $this->set($name, $value);
+        $this->set($name, $value);
     }
 
     public function offsetExists($offset): bool

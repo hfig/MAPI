@@ -18,7 +18,7 @@ class PropertyStoreEncodings
         return $e;
     }
 
-    public static function decode0x001f(Element $e): array|string|false
+    public static function decode0x001f(Element $e): string
     {
         return mb_convert_encoding($e->getData(), 'UTF-8', 'UTF-16LE');
     }
@@ -28,17 +28,17 @@ class PropertyStoreEncodings
         return trim((string) $e->getData());
     }
 
-    public static function decode0x0102(Element $e)
+    public static function decode0x0102(Element $e): string
     {
         return $e->getData();
     }
 
-    public static function decodeUnknown(Element $e)
+    public static function decodeUnknown(Element $e): string
     {
         return $e->getData();
     }
 
-    public static function decode($encoding, Element $e)
+    public static function decode($encoding, Element $e): Element|string
     {
         if (isset(self::ENCODERS[$encoding])) {
             $fn = self::ENCODERS[$encoding];
@@ -49,19 +49,19 @@ class PropertyStoreEncodings
         return self::decodeUnknown($e);
     }
 
-    public static function getDecoder($encoding)
+    public static function getDecoder($encoding): callable
     {
         if (isset(self::ENCODERS[$encoding])) {
             $fn = self::ENCODERS[$encoding];
 
-            return self::$fn;
+            return [self::class, $fn];
         }
 
-        return self::decodeUnknown;
+        return self::decodeUnknown(...);
     }
 
-    public static function decodeFunction($encoding, Element $e)
+    public static function decodeFunction($encoding, Element $e): callable
     {
-        return fn () => PropertyStoreEncodings::decode($encoding, $e);
+        return static fn () => PropertyStoreEncodings::decode($encoding, $e);
     }
 }

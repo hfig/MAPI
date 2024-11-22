@@ -17,10 +17,10 @@ abstract class Attachment extends MapiObject
         return $this->embedded_msg ?? $this->embedded_ole ?? $this->properties['attach_data'] ?? null;
     }
 
-    public function copyToStream($stream)
+    public function copyToStream($stream): void
     {
         if ($this->embedded_ole) {
-            return $this->storeEmbeddedOle($stream);
+            $this->storeEmbeddedOle($stream);
         }
         fwrite($stream, $this->getData() ?? '');
     }

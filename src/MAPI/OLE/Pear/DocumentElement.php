@@ -7,7 +7,7 @@ use OLE;
 
 class DocumentElement implements CompoundDocumentElement
 {
-    /** @var DocumentElementCollection */
+    // ** @var DocumentElementCollection */
     // private $wrappedChildren;
 
     // the OLE file reference is required because the member ->ole on the PPS
@@ -154,7 +154,7 @@ class DocumentElement implements CompoundDocumentElement
         return new DocumentElementCollection($this->ole, $this->pps->children);
     }
 
-    public function getData()
+    public function getData(): string
     {
         // echo sprintf('Reading data for %s: index: %d, start: 0, length: %d'."\n", $this->getName(), $this->getIndex(), $this->getSize());
 

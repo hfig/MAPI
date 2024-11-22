@@ -18,10 +18,6 @@ class Message extends MessageItem
     ];
 
     protected Element $obj;
-
-    /** @var PropertySet */
-    protected $properties;
-
     protected ?Message $parent;
 
     /** @var Attachment[] */
@@ -31,16 +27,16 @@ class Message extends MessageItem
 
     protected $bodyPlain;
     protected $bodyRTF;
-    protected $bodyHTML;
+    protected ?string $bodyHTML = null;
 
     public function __construct(Element $obj, ?Message $parent = null)
     {
+        parent::__construct(new PropertySet(
+            new PropertyStore($obj, ($parent instanceof Message) ? $parent->getNameId() : null),
+        ));
+
         $this->obj    = $obj;
         $this->parent = $parent;
-
-        $this->properties = new PropertySet(
-            new PropertyStore($obj, ($parent instanceof Message) ? $parent->getNameId() : null),
-        );
 
         $this->buildAttachments();
         $this->buildRecipients();
@@ -136,32 +132,31 @@ class Message extends MessageItem
         return $this->bodyRTF;
     }
 
-    public function getBodyHTML()
+    public function getBodyHTML(): string
     {
-        if ($this->bodyHTML) {
-            return $this->bodyHTML;
-        }
-
-        if ($this->properties['body_html']) {
-            $this->bodyHTML = $this->properties['body_html'];
-
-            if ($this->bodyHTML) {
-                $this->bodyHTML = trim((string) $this->bodyHTML);
-            }
-        }
-
-        if (!$this->bodyHTML) {
-            if ($rtf = $this->getBodyRTF()) {
-                $this->bodyHTML = RTF\EmbeddedHTML::extract($rtf);
-            }
-
-            if (!$this->bodyHTML) {
-                // jstewmc/rtf
-                throw new \Exception('No HTML or Embedded RTF body. Convert from RTF not implemented');
-            }
+        if ($this->bodyHTML === null) {
+            $this->bodyHTML = $this->getBodyHtmlWithoutCache();
         }
 
         return $this->bodyHTML;
+    }
+
+    private function getBodyHtmlWithoutCache(): string
+    {
+        if ($this->properties['body_html']) {
+            return trim((string) $this->properties['body_html']);
+        }
+
+        $rtf = $this->getBodyRTF();
+        if (!empty($rtf)) {
+            $extractedHtml = RTF\EmbeddedHTML::extract($rtf);
+
+            if (!empty($extractedHtml)) {
+                return $extractedHtml;
+            }
+        }
+
+        throw new \Exception('No HTML or Embedded RTF body. Convert from RTF not implemented');
     }
 
     public function getSender()
@@ -171,7 +166,7 @@ class Message extends MessageItem
         $senderType = $this->properties['sender_addrtype'];
 
         $from = '';
-        if ($senderType == 'SMTP') {
+        if ($senderType === 'SMTP') {
             $from = $senderAddr;
         } else {
             $from = $this->properties['sender_smtp_address'] ?? $this->properties['sender_representing_smtp_address'] ?? // synthesise??
@@ -204,7 +199,7 @@ class Message extends MessageItem
 
     public function __get($name)
     {
-        if ($name == 'properties') {
+        if ($name === 'properties') {
             return $this->properties;
         }
 

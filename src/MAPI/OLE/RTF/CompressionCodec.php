@@ -94,8 +94,6 @@ class CompressionCodec
 
     /**
      * @comment see Kopano-core Mapi4Linux or Python delimitry/compressed_rtf
-     *
-     * @return false|string
      */
     public static function encode($data): string
     {

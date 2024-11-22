@@ -124,9 +124,8 @@ class PropertyStore
 
             // # the property will be serialised as this pseudo property, mapping it to this named property
             $pseudo_prop = 0x8000 + $offset;
-            $named       = ($flags & 1 === 1);
-            $prop        = '';
-            if ($named !== 0) {
+            $named       = ($flags & 1) === 1;
+            if ($named) {
                 $str_off = unpack('V', $rawProp)[1];
                 if (strlen((string) $namesData) - $str_off < 4) {
                     continue;
@@ -172,10 +171,10 @@ class PropertyStore
                 // #p obj.data.unpack('V*')
                 // # ignore this one
                 return;
-            } else {
-                // remove multivalue flag for individual pieces
-                $encoding &= ~$MULTIVAL;
             }
+
+            // remove multivalue flag for individual pieces
+            $encoding &= ~$MULTIVAL;
         } else {
             if ($offset) {
                 $this->logger->warning(sprintf('offset specified for non-multivalue encoding %s', $obj->getName()));
@@ -288,9 +287,9 @@ class PropertyStore
                     $raw   = strrev(substr($rawProp, 8, 8));
                     $value = ord($raw[7]);
                     for ($i = 6; $i >= 0; --$i) {
-                        $fig   = ord($raw[$i]);
-                        $order = abs(8 - $i);
-                        $value = bcadd($value, bcmul($fig, bcmul(10, $order)));
+                        $fig   = (string) ord($raw[$i]);
+                        $order = (string) abs(8 - $i);
+                        $value = bcadd($value, bcmul($fig, bcmul('10', $order)));
                     }
                     $this->addProperty($key, $value);
                     break;

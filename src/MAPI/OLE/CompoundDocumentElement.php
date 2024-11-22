@@ -57,10 +57,9 @@ interface CompoundDocumentElement
 
     public function setSize($size);
 
-    /** @return Pear\DocumentElementCollection */
-    public function getChildren();
+    public function getChildren(): Pear\DocumentElementCollection;
 
-    public function getData();
+    public function getData(): string;
 
     public function saveToStream($stream);
 }

@@ -110,6 +110,7 @@ class Message extends BaseMessage implements MimeConvertible
 
         // body
         $hasHtml      = false;
+        $html         = '';
         $bodyBoundary = '';
         if ($boundary && preg_match('~^_(\d\d\d)_([^_]+)_~', (string) $boundary, $matches)) {
             $bodyBoundary = sprintf('_%03d_%s_', (int) $matches[1] + 1, $matches[2]);

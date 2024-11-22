@@ -7,9 +7,6 @@ use Hfig\MAPI\OLE\CompoundDocumentElement as Element;
 use Hfig\MAPI\Property\PropertySet;
 use Hfig\MAPI\Property\PropertyStore;
 
-/**
- * @var PropertySet $properties
- */
 class Attachment extends AttachmentItem
 {
     protected Element $obj;
