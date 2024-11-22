@@ -15,7 +15,8 @@
         "swiftmailer/swiftmailer": "^6.1",
         "phpunit/phpunit": "^10.0",
         "pear/pear-core-minimal": "^1.10.10",
-        "friendsofphp/php-cs-fixer": "^3.64"
+        "friendsofphp/php-cs-fixer": "^3.64",
+        "phpstan/phpstan": "^2.0"
     },
     "suggest": {
         "swiftmailer/swiftmailer": "Conversion to MIME (eml file) message format"  

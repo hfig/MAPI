@@ -39,6 +39,9 @@ jobs:
       - name: "PHP-CS-Fixer"
         run:  "vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run"
 
+      - name: "PHPStan"
+        run:  "vendor/bin/phpstan analyze"
+
   tests:
     name: "Tests ${{ matrix.php-version }} ${{ matrix.dependency-versions }}"
     runs-on: ubuntu-22.04
