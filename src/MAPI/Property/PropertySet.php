@@ -131,8 +131,7 @@ class PropertySet implements \ArrayAccess
         return !is_null($this->raw->get($this->resolveKey($offset)));
     }
 
-    #[\ReturnTypeWillChange]
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->get($offset);
     }

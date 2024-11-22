@@ -28,8 +28,7 @@ class DocumentElementCollection implements \ArrayAccess, \IteratorAggregate
         return isset($this->col[$offset]);
     }
 
-    #[\ReturnTypeWillChange]
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         if (!isset($this->col[$offset])) {
             return null;
