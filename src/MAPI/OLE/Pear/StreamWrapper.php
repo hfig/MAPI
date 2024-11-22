@@ -2,9 +2,9 @@
 
 namespace Hfig\MAPI\OLE\Pear;
 
-class StreamWrapper 
+class StreamWrapper
 {
-    const PROTOCOL = 'olewrap';
+    public const PROTOCOL = 'olewrap';
 
     private $stream;
     public $context;
@@ -12,20 +12,19 @@ class StreamWrapper
     private $buffer;
     private $position;
 
-
     private static $handles = [];
 
     public static function wrapStream($stream, $mode): string
     {
         self::register();
 
-        $data = ['mode' => $mode, 'stream' => $stream];
+        $data            = ['mode' => $mode, 'stream' => $stream];
         self::$handles[] = $data;
 
         end(self::$handles);
         $key = key(self::$handles);
 
-        return 'olewrap://stream/' . (string)$key;
+        return 'olewrap://stream/'.(string) $key;
     }
 
     /**
@@ -34,7 +33,7 @@ class StreamWrapper
     public static function createStreamContext($stream)
     {
         return stream_context_create([
-            'olewrap' => ['stream' => $stream]
+            'olewrap' => ['stream' => $stream],
         ]);
     }
 
@@ -50,14 +49,12 @@ class StreamWrapper
         return $this->stream;
     }
 
-
     public function stream_open($path, $mode, $options, &$opened_path): bool
-    { 
-        $url = parse_url($path);
+    {
+        $url        = parse_url($path);
         $streampath = [];
-        $handle = null;
-        
-        
+        $handle     = null;
+
         if (isset($url['path'])) {
             $streampath = explode('/', $url['path']);
         }
@@ -68,13 +65,11 @@ class StreamWrapper
             $this->stream = self::$handles[$handle]['stream'];
 
             if ($mode[0] == 'r' || $mode[0] == 'a') {
-                fseek($this->stream, 0);            
+                fseek($this->stream, 0);
             }
 
-            $this->buffer = '';
+            $this->buffer   = '';
             $this->position = 0;
-                    
-            
 
             return true;
         }
@@ -86,7 +81,6 @@ class StreamWrapper
     {
         // always read a block to satisfy the buffer
         $this->buffer = fread($this->stream, 8192);
-
 
         return substr($this->buffer, 0, $count);
     }
@@ -114,7 +108,7 @@ class StreamWrapper
 
     public function stream_seek($offset, $whence): int
     {
-        //echo 'seeking on parent stream (' . $offset . '  ' . $whence . ')'."\n";
+        // echo 'seeking on parent stream (' . $offset . '  ' . $whence . ')'."\n";
         return fseek($this->stream, $offset, $whence);
     }
 
@@ -141,7 +135,7 @@ class StreamWrapper
             'mtime'   => 0,
             'ctime'   => 0,
             'blksize' => 0,
-            'blocks'  => 0
+            'blocks'  => 0,
         ];
     }
 }

@@ -4,9 +4,8 @@ namespace Hfig\MAPI\Message;
 
 use Hfig\MAPI\Item\Recipient as RecipientItem;
 use Hfig\MAPI\OLE\CompoundDocumentElement as Element;
-
-use Hfig\MAPI\Property\PropertyStore;
 use Hfig\MAPI\Property\PropertySet;
+use Hfig\MAPI\Property\PropertyStore;
 
 class Recipient extends RecipientItem
 {
@@ -22,7 +21,7 @@ class Recipient extends RecipientItem
 
         // initialise property set
         $this->properties = new PropertySet(
-            new PropertyStore($obj, $parent->getNameId())
+            new PropertyStore($obj, $parent->getNameId()),
         );
     }
 

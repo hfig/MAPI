@@ -8,7 +8,7 @@ class PropertyCollection implements \IteratorAggregate
 
     public function set(PropertyKey $key, $value): void
     {
-        //echo sprintf('Setting for %s %s'."\n", $key->getCode(), $key->getGuid());
+        // echo sprintf('Setting for %s %s'."\n", $key->getCode(), $key->getGuid());
         $this->col[$key->getHash()] = ['key' => $key, 'value' => $value];
     }
 
@@ -23,6 +23,7 @@ class PropertyCollection implements \IteratorAggregate
         if (is_null($bucket)) {
             return null;
         }
+
         return $bucket['value'];
     }
 
@@ -33,14 +34,14 @@ class PropertyCollection implements \IteratorAggregate
 
     public function keys(): array
     {
-        return array_map(function($bucket) {
+        return array_map(function ($bucket) {
             return $bucket['key'];
         }, $this->col);
     }
 
     public function values(): array
     {
-        return array_map(function($bucket) {
+        return array_map(function ($bucket) {
             return $bucket['value'];
         }, $this->col);
     }
@@ -51,5 +52,4 @@ class PropertyCollection implements \IteratorAggregate
             yield $bucket['key'] => $bucket['value'];
         }
     }
-
 }

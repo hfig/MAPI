@@ -4,8 +4,8 @@ namespace Hfig\MAPI\Item;
 
 abstract class Attachment extends MapiObject
 {
-    protected $embedded_msg = null;
-    protected $embedded_ole = null;
+    protected $embedded_msg;
+    protected $embedded_ole;
 
     public function getFilename()
     {
@@ -28,10 +28,8 @@ abstract class Attachment extends MapiObject
     protected function storeEmbeddedOle($stream): void
     {
         // this is very untested...
-        //throw new \RuntimeException('Saving an OLE Compound Document is not supported');
+        // throw new \RuntimeException('Saving an OLE Compound Document is not supported');
 
         $this->embedded_ole->saveToStream($stream);
     }
-
-
 }

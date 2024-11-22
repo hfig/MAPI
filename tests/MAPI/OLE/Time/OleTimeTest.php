@@ -12,7 +12,7 @@ class OleTimeTest extends TestCase
     {
         $actual = OleTime::getTimeFromOleTime($input);
 
-        $this->assertEquals($expected,$actual, sprintf('Failed test %d',$number));
+        $this->assertEquals($expected, $actual, sprintf('Failed test %d', $number));
     }
 
     public static function getTimeFromOleTimeProvider()

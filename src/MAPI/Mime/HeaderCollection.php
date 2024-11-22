@@ -10,13 +10,13 @@ class HeaderCollection implements \IteratorAggregate
     {
         return new \ArrayIterator($this->rawHeaders);
     }
-    
+
     public function add($header, $value = null): void
     {
         if (is_null($value)) {
-            //echo $header . "\n";
+            // echo $header . "\n";
             @list($header, $value) = explode(':', $header, 2);
-            //if (!$value) throw new \Exception('No value for ' . $header);
+            // if (!$value) throw new \Exception('No value for ' . $header);
             $value = ltrim($value);
         }
 
@@ -25,17 +25,15 @@ class HeaderCollection implements \IteratorAggregate
             'rawkey' => $header,
             'value'  => $value,
         ];
-        $val = (object)$val;
-
+        $val = (object) $val;
 
         if (isset($this->rawHeaders[$key])) {
             if (!is_array($this->rawHeaders[$key])) {
-                $this->rawHeaders[$key] = [ $this->rawHeaders[$key] ];
+                $this->rawHeaders[$key] = [$this->rawHeaders[$key]];
             }
-            
+
             $this->rawHeaders[$key][] = $val;
-        }
-        else {
+        } else {
             $this->rawHeaders[$key] = $val;
         }
     }
@@ -47,7 +45,7 @@ class HeaderCollection implements \IteratorAggregate
             'rawkey' => $header,
             'value'  => $value,
         ];
-        $val = (object)$val;
+        $val = (object) $val;
 
         $this->rawHeaders[$key] = $val;
     }
@@ -65,8 +63,10 @@ class HeaderCollection implements \IteratorAggregate
     public function getValue($header)
     {
         $raw = $this->get($header);
-        
-        if (is_null($raw)) return null;
+
+        if (is_null($raw)) {
+            return null;
+        }
         if (is_array($raw)) {
             return array_map(function ($e) {
                 return $e->value;
@@ -74,12 +74,12 @@ class HeaderCollection implements \IteratorAggregate
         }
 
         return $raw->value;
-
     }
 
     public function has($header): bool
     {
         $key = strtolower($header);
+
         return isset($this->rawHeaders[$key]);
     }
 

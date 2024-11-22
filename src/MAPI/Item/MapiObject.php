@@ -10,6 +10,4 @@ class MapiObject
     {
         $this->properties = $properties;
     }
-
-
 }

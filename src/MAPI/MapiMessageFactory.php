@@ -2,14 +2,14 @@
 
 namespace Hfig\MAPI;
 
-use Hfig\MAPI\OLE\CompoundDocumentElement as Element;
 use Hfig\MAPI\Mime\ConversionFactory;
+use Hfig\MAPI\OLE\CompoundDocumentElement as Element;
 
 class MapiMessageFactory
 {
-    private $parent = null;
+    private $parent;
 
-    public function __construct(ConversionFactory $conversionFactory = null)
+    public function __construct(?ConversionFactory $conversionFactory = null)
     {
         $this->parent = $conversionFactory;
     }
@@ -19,6 +19,7 @@ class MapiMessageFactory
         if ($this->parent) {
             return $this->parent->parseMessage($root);
         }
-        return new \Hfig\MAPI\Message\Message($root);
+
+        return new Message\Message($root);
     }
 }

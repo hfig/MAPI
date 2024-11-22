@@ -2,20 +2,18 @@
 
 namespace Hfig\MAPI\OLE\Pear;
 
-use OLE;
-
 class DocumentElementCollection implements \ArrayAccess, \IteratorAggregate
 {
-    /** @var OLE */
+    /** @var \OLE */
     private $ole;
-    private $col = [];
+    private $col       = [];
     private $proxy_col = [];
 
-    public function __construct(OLE $ole, array &$collection = null)
+    public function __construct(\OLE $ole, ?array &$collection = null)
     {
         if (is_null($collection)) {
-            $tmpcol = [];
-            $collection =& $tmpcol;
+            $tmpcol     = [];
+            $collection = &$tmpcol;
         }
         $this->col = &$collection;
         $this->ole = $ole;
@@ -23,8 +21,7 @@ class DocumentElementCollection implements \ArrayAccess, \IteratorAggregate
 
     public function getIterator(): \Traversable
     {
-        foreach ($this->col as $k => $v)
-        {
+        foreach ($this->col as $k => $v) {
             yield $k => $this->offsetGet($k);
         }
     }
@@ -34,9 +31,6 @@ class DocumentElementCollection implements \ArrayAccess, \IteratorAggregate
         return isset($this->col[$offset]);
     }
 
-    /**
-     * @return mixed
-     */
     #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
@@ -58,7 +52,7 @@ class DocumentElementCollection implements \ArrayAccess, \IteratorAggregate
         }
 
         $this->proxy_col[$offset] = $value;
-        $this->col[$offset] = $value->unwrap();
+        $this->col[$offset]       = $value->unwrap();
     }
 
     public function offsetUnset($offset): void

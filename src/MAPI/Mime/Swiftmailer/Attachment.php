@@ -26,9 +26,8 @@ class Attachment extends BaseAttachment implements MimeConvertible
         if ($this->getMimeType() != 'Microsoft Office Outlook Message') {
             $attachment->setFilename($this->getFilename());
             $attachment->setContentType($this->getMimeType());
-        }
-        else {
-            $attachment->setFilename($this->getFilename() . '.eml');
+        } else {
+            $attachment->setFilename($this->getFilename().'.eml');
             $attachment->setContentType('message/rfc822');
         }
 
@@ -39,23 +38,21 @@ class Attachment extends BaseAttachment implements MimeConvertible
         if ($data = $this->properties['attach_content_location']) {
             $attachment->getHeaders()->addTextHeader('Content-Location', $data);
         }
-        
-        if ($data = $this->properties['attach_content_id'])  {
+
+        if ($data = $this->properties['attach_content_id']) {
             $attachment->setId($data);
         }
 
         if ($this->embedded_msg) {
             $attachment->setBody(
-                Message::wrap($this->embedded_msg)->toMime()
+                Message::wrap($this->embedded_msg)->toMime(),
             );
-        }
-        elseif ($this->embedded_ole) {
+        } elseif ($this->embedded_ole) {
             // in practice this scenario doesn't seem to occur
             // MS Office documents are attached as files not
             // embedded ole objects
             throw new \Exception('Not implemented: saving emebed OLE content');
-        }
-        else {
+        } else {
             $attachment->setBody($this->getData());
         }
 
@@ -64,7 +61,7 @@ class Attachment extends BaseAttachment implements MimeConvertible
 
     public function toMimeString(): string
     {
-        return (string)$this->toMime();
+        return (string) $this->toMime();
     }
 
     public function copyMimeToStream($stream): void

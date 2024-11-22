@@ -9,9 +9,9 @@ use Hfig\MAPI\OLE\Guid\OleGuid;
 class PropertySetConstants
 {
     // the property set guid constants
-	// these guids are all defined with the macro DEFINE_OLEGUID in mapiguid.h.
+    // these guids are all defined with the macro DEFINE_OLEGUID in mapiguid.h.
     // see http://doc.ddart.net/msdn/header/include/mapiguid.h.html
-    
+
     public const OLE_GUID = '{${prefix}-0000-0000-c000-000000000046}';
 
     public const NAMES = [
@@ -42,15 +42,20 @@ class PropertySetConstants
     protected static function get($offset)
     {
         static $lookup = [];
-        if (isset($lookup[$offset])) return $lookup[$offset];
+        if (isset($lookup[$offset])) {
+            return $lookup[$offset];
+        }
 
         $guid = array_search($offset, static::NAMES);
-        if ($guid === false) return null;
+        if ($guid === false) {
+            return null;
+        }
 
         $guid = str_replace('${prefix}', $guid, static::OLE_GUID);
         $guid = OleGuid::fromString($guid);
 
         $lookup[$offset] = $guid;
+
         return $guid;
     }
 
@@ -65,8 +70,7 @@ class PropertySetConstants
         if (is_null($ret)) {
             throw new \RuntimeException('Unknown constant '.$name);
         }
+
         return $ret;
     }
-
-
 }
