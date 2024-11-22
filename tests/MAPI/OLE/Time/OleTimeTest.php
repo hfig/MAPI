@@ -7,9 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class OleTimeTest extends TestCase
 {
-    /**
-     * @dataProvider getTimeFromOleTimeProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('getTimeFromOleTimeProvider')]
     public function testGetTimeFromOleTime(int $number, string $input, int $expected)
     {
         $actual = OleTime::getTimeFromOleTime($input);
@@ -17,7 +15,7 @@ class OleTimeTest extends TestCase
         $this->assertEquals($expected,$actual, sprintf('Failed test %d',$number));
     }
 
-    public function getTimeFromOleTimeProvider()
+    public static function getTimeFromOleTimeProvider()
     {
         return [
             [1, hex2bin('4012a294ea41c601'), 1141737919],
