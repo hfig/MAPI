@@ -153,8 +153,23 @@ class PropertyStore
                 $prop = $d['a'];
             }
 
-            //# a bit sus
             $guid_off = $flags >> 1;
+
+            // Check if the calculated index is valid
+            if ($guid_off - 2 < 0 || $guid_off - 2 >= count($guids)) {
+                $this->logger->warning(sprintf(
+                "GUID offset out of bounds. Calculated offset: %d. Flags: %d. GUID array size: %d",
+                $guid_off - 2,
+                $flags,
+                count($guids)
+            ));
+            continue; // Skip this property if the GUID offset is invalid
+            }
+
+            // Access the valid GUID
+            $guid = $guids[$guid_off - 2];
+
+
             $guid = $guids[$guid_off - 2];
 
             /*$properties[] = [
