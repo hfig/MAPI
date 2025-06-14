@@ -44,7 +44,7 @@ class Message extends MessageItem
 
 
 
-    public function __construct(Element $obj, Message $parent = null)
+    public function __construct(Element $obj, ?Message $parent = null)
     {
         
         $this->obj = $obj;

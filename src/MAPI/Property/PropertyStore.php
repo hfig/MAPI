@@ -30,7 +30,7 @@ class PropertyStore
     protected $logger;
 
 
-    public function __construct(Element $obj = null, $nameId = null, LoggerInterface $logger = null)
+    public function __construct(?Element $obj = null, $nameId = null, ?LoggerInterface $logger = null)
     {
         $this->cache = new PropertyCollection();
         $this->nameId = null;

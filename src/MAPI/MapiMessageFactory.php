@@ -9,7 +9,7 @@ class MapiMessageFactory
 {
     private $parent = null;
 
-    public function __construct(ConversionFactory $conversionFactory = null)
+    public function __construct(?ConversionFactory $conversionFactory = null)
     {
         $this->parent = $conversionFactory;
     }

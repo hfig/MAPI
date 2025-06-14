@@ -11,7 +11,7 @@ class DocumentElementCollection implements \ArrayAccess, \IteratorAggregate
     private $col = [];
     private $proxy_col = [];
 
-    public function __construct(OLE $ole, array &$collection = null)
+    public function __construct(OLE $ole, ?array &$collection = null)
     {
         if (is_null($collection)) {
             $tmpcol = [];

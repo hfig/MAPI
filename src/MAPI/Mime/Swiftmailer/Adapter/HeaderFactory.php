@@ -14,7 +14,7 @@ class HeaderFactory extends Swift_Mime_SimpleHeaderFactory
     protected $encoder;
     protected $charset;
 
-    public function __construct(Swift_Mime_HeaderEncoder $encoder, Swift_Encoder $paramEncoder, EmailValidator $emailValidator, $charset = null, Swift_AddressEncoder $addressEncoder = null)
+    public function __construct(Swift_Mime_HeaderEncoder $encoder, Swift_Encoder $paramEncoder, EmailValidator $emailValidator, $charset = null, ?Swift_AddressEncoder $addressEncoder = null)
     {
         parent::__construct($encoder, $paramEncoder, $emailValidator, $charset, $addressEncoder);
 
