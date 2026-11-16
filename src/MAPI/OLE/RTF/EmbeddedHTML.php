@@ -71,7 +71,10 @@ class EmbeddedHTML
             }
 			//#elseif ($scanner->scanRegex('/\\li(\d+) ?/')) {}
 			//#elseif ($scanner->scanRegex('/\\fi-(\d+) ?/')) {}
-			elseif ($scanner->scanRegex('/\r?\n/')) {
+			// plain scans rather than /\r?\n/: PCRE looks ahead for the required \n
+			// even when the match is anchored, which costs a pass over the rest
+			// of the buffer for every character that reaches this branch
+			elseif ($scanner->scan("\r\n") || $scanner->scan("\n")) {
                 //echo 'data CRLF';
             }
 			elseif ($scanner->scanRegex('/\x5c({|}|\x5c)/')) {

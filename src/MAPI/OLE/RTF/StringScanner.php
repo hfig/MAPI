@@ -32,7 +32,10 @@ class StringScanner
 
     public function scanRegex($regex)
     {
-        if (preg_match($regex, $this->buffer, $matches, PREG_OFFSET_CAPTURE, $this->pos)) {
+        // The A modifier anchors the match at the offset. Without it, preg_match()
+        // searches the whole rest of the buffer before the position check below
+        // rejects a later match, which makes scanning quadratic in the input size.
+        if (preg_match($regex . 'A', $this->buffer, $matches, PREG_OFFSET_CAPTURE, $this->pos)) {
             if ($matches[0][1] == $this->pos) {
                 $this->pos += strlen($matches[0][0]);
                 $this->last = $matches;
