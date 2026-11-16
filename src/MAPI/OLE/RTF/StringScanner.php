@@ -71,6 +71,13 @@ class StringScanner
         return $this->pos >= strlen($this->buffer);
     }
 
+    // consumes the next character and every following one that is not in $mask
+    public function incrementUntilAny($mask)
+    {
+        $count = 1 + strcspn($this->buffer, $mask, $this->pos + 1);
+        return $this->increment($count);
+    }
+
     public function increment($count = 1)
     {
         $this->last = substr($this->buffer, $this->pos, $count);

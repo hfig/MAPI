@@ -84,7 +84,9 @@ class EmbeddedHTML
             else {
                 //echo 'append';
 
-                $html .= $scanner->increment();
+                // every branch above starts with one of these characters, so the
+                // text up to the next one can be appended in a single step
+                $html .= $scanner->incrementUntilAny("{}\\\r\n");
             }						
 
             //echo '    ' . substr($html, -20) . "\n";
